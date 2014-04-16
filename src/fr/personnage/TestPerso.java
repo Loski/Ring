@@ -10,10 +10,10 @@ public class TestPerso {
 		//System.out.println(mario);
 		mario.setVitalite(-150);
 		//System.out.println(mario);
-		mario.capacite[0].soin(mario);
-		//System.out.println(mario);
+		mario.soin(0);
+		System.out.println(mario);
 		mario.capacite[1].attaque(mario, ichigo);
-		System.out.println(ichigo);
+		//System.out.println(ichigo);
 	}
 
 }

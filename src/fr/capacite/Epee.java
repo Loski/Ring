@@ -7,7 +7,7 @@ public class Epee extends Capacite{
 	private int parade;
 	private int parade_arme;
 	private int attaque;
-	private String nom;
+	private int maniabilite;
 	
 	public static final String categorie = "Attaque, parade";
 	
@@ -42,11 +42,13 @@ public class Epee extends Capacite{
 	public void calculParade(Combattant combattant){
 		this.parade = (combattant.getForce() * this.parade_arme) / 10_000; 
 	}
-	
-	///Attaque
-	public boolean attaque(Combattant combattant, Combattant cible){
+	public void calcul(Combattant combattant){
 		this.calculImpact(combattant.getForce(), this.impactEpee); 
 		this.calculReussite(combattant.getDexterite(), this.maniabilite);
+	}
+	///Attaque
+	public boolean attaque(Combattant combattant, Combattant cible){
+
 		System.out.println(this.impact);
 		if(true) // faire la fonction test
 			cible.lowVita(this.impact);

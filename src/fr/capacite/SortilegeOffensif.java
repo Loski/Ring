@@ -11,5 +11,12 @@ public class SortilegeOffensif extends Magie {
 			cible.lowVita(this.impact);
 		}
 	}
+	public void calculReussite(Combattant combattant) {
+		super.calculReussite(combattant.getConcentration(), this.facilite);
+	}
+
+	public void calculImpact(Combattant combattant) {
+		super.calculImpact(combattant.getIntelligence(), this.efficacite);
+	}
 
 }

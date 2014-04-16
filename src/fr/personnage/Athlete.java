@@ -1,5 +1,4 @@
 package fr.personnage;
-import fr.capacite.*;
 
 public class Athlete extends Combattant {
 

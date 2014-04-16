@@ -1,8 +1,7 @@
 package fr.capacite;
 
-import fr.personnage.Combattant;
-
 public abstract class Magie extends Capacite {
+	protected int efficacite,facilite;
 	public Magie(){
 		this.efficacite = this.facilite = 50;
 	}
@@ -12,6 +11,4 @@ public abstract class Magie extends Capacite {
 			this.facilite = facilite;
 		}
 	}
-	
-
 }
