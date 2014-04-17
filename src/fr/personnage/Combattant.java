@@ -20,6 +20,7 @@ public class Combattant {
 	protected int valeurProtection;
 	protected boolean initiative;
 	protected int pointAction = 2;
+	protected boolean capitule = false;
 
 	public static final int MIN_XP = 1;
 	public static final int MAX_XP = 20;
@@ -210,7 +211,13 @@ public class Combattant {
 			return false;
 		return true;
 	}
+	public boolean isInitiative() {
+		return initiative;
+	}
 
+	public void setInitiative(boolean initiative) {
+		this.initiative = initiative;
+	}
 	public String getNom() {
 		return nom;
 	}

@@ -9,13 +9,13 @@ public class Epee extends Capacite{
 	private int attaque;
 	private int maniabilite;
 	
-	public static final String categorie = "Attaque, parade";
 	
 	public Epee(){
 		this.nom = "unknow";
 		this.impactEpee = 33;
 		this.parade_arme = 33;
 		this.maniabilite = 34;
+		this.categorie = Action.PHYSIQUE; 
 	}
 	
 	public Epee(int impact,int maniabilite, int parade, String nom){
@@ -24,6 +24,7 @@ public class Epee extends Capacite{
 			this.maniabilite = maniabilite;
 			this.parade_arme = parade;
 			this.nom = nom;
+			this.categorie = Action.PHYSIQUE;
 		}
 	}
 	
@@ -31,6 +32,7 @@ public class Epee extends Capacite{
 		this.impact = sword.impact;
 		this.maniabilite = sword.maniabilite;
 		this.parade_arme = sword.parade;
+		this.categorie = sword.categorie;
 		this.nom = new String(sword.nom);
 	}
 	
