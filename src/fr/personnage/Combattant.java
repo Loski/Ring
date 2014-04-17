@@ -18,10 +18,13 @@ public class Combattant {
 	protected Capacite[] capacite;
 	protected int typeProtection;
 	protected int valeurProtection;
-	protected boolean initiative;
 	protected int pointAction = 2;
-	protected boolean capitule = false;
-
+	protected boolean capitule = false, enVie = true;
+	protected boolean initiative;
+	
+	protected int nombreCapacite = 2;
+	
+	
 	public static final int MIN_XP = 1;
 	public static final int MAX_XP = 20;
 	public static final int PROTECTION_MAGIQUE =1, PROTECTION_PHYSIQUE = 2;
@@ -289,5 +292,21 @@ public class Combattant {
 	public int getPointAction() {
 		return this.pointAction;
 	}
+
+	public boolean isCapitule() {
+		return capitule;
+	}
+
+	public void setCapitule(boolean capitule) {
+		this.capitule = capitule;
+	}
+	public int getNombreCapacite() {
+		return nombreCapacite;
+	}
+
+	public void setNombreCapacite(int nombreCapacite) {
+		this.nombreCapacite = nombreCapacite;
+	}
+
 
 }

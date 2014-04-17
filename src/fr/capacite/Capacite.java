@@ -2,7 +2,7 @@ package fr.capacite;
 
 import fr.personnage.Combattant;
 
-public abstract class Capacite{
+public abstract class Capacite implements Action{
 
 	public static final int MIN_CAPACITE = 2;
 	public static final int MAX_CAPACITE = 9;
@@ -13,8 +13,7 @@ public abstract class Capacite{
 	protected int categorie;
 	protected String nom;
 	protected int type;
-	public abstract void calculImpact(Combattant combattant);
-	public abstract void calculReussite(Combattant combattant);
+
 	
 	public Capacite(){
 		
@@ -27,13 +26,17 @@ public abstract class Capacite{
 		this.nom = nom;
 		this.type = type;
 	}
-	public Capacite(String nom, int type){
+	public Capacite(String nom, int type, int categorie, String description){
 		this.nom = nom;
 		this.type = type;
+		this.categorie = categorie;
+		this.description = description;
 	}
+	
 	public void calculImpact(int cara_Perso, int cara_Capa) {
 		this.impact = (cara_Capa * cara_Perso) / 100;
 	}	
+	
 	public void calculReussite(int cara_Perso, int cara_Capa) {
 		this.reussite = (cara_Perso * cara_Capa) / 10_000;
 	}
@@ -70,6 +73,9 @@ public abstract class Capacite{
 	}
 	public int getType() {
 		return this.type;
+	}
+	public void setType(int type){
+		this.type = type;
 	}
 	
 }

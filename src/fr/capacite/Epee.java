@@ -4,39 +4,33 @@ import fr.personnage.Combattant;
 
 public class Epee extends Capacite{
 	private int impactEpee;
-	private int parade;
-	private int parade_arme;
-	private int attaque;
+	private int paradeEpee;
 	private int maniabilite;
-	
-	
+
 	public Epee(){
-		this.nom = "unknow";
+		super("unknow", Capacite.EPEE, Capacite.PHYSIQUE, "C'est une épée");
 		this.impactEpee = 33;
-		this.parade_arme = 33;
+		this.paradeEpee = 33;
 		this.maniabilite = 34;
-		this.categorie = Action.PHYSIQUE; 
 	}
 	
-	public Epee(int impact,int maniabilite, int parade, String nom){
-		if(impact + maniabilite + parade == 100){
+	public Epee(int impact,int maniabilite, int parade, String nom, String description){
+		super(nom, Capacite.EPEE, Capacite.PHYSIQUE, description);
+		if(impactEpee + maniabilite + paradeEpee == 100  && parade >= 20 && impactEpee >=20 && maniabilite >= 20){
 			this.impact = impact;
 			this.maniabilite = maniabilite;
-			this.parade_arme = parade;
-			this.nom = nom;
-			this.categorie = Action.PHYSIQUE;
+			this.paradeEpee = parade;
 		}
 	}
 	
 	public Epee(Epee sword){
-		this.impact = sword.impact;
+		this.impactEpee = sword.impactEpee;
 		this.maniabilite = sword.maniabilite;
-		this.parade_arme = sword.parade;
-		this.categorie = sword.categorie;
+		this.paradeEpee = sword.paradeEpee;
 		this.nom = new String(sword.nom);
 	}
 	
-
+/*
 	public void calculAttaque(Combattant combattant){
 		this.attaque =  (combattant.getForce() * this.impact) / 10_000; //p'tete 100
 	}
@@ -44,68 +38,20 @@ public class Epee extends Capacite{
 	public void calculParade(Combattant combattant){
 		this.parade = (combattant.getForce() * this.parade_arme) / 10_000; 
 	}
+	
 	public void calcul(Combattant combattant){
 		this.calculImpact(combattant.getForce(), this.impactEpee); 
-		this.calculReussite(combattant.getDexterite(), this.maniabilite);
-	}
-	///Attaque
-	public boolean attaque(Combattant combattant, Combattant cible){
-
-		System.out.println(this.impact);
-		if(true) // faire la fonction test
-			cible.lowVita(this.impact);
-		return false;
-	}	
-	/// Parade
-
-	public int getImpact() {
-		return impact;
 	}
 	
 
-	public void setImpact(int impact) {
-		this.impact = impact;
+	public void calculImpact(Combattant combattant) {
+		// TODO Auto-generated method stub
+		
 	}
 
-	public int getManiabilite() {
-		return maniabilite;
+	public void calculReussite(Combattant combattant) {
+		super.calculReussite(combattant.getDexterite(), this.maniabilite);
 	}
 
-	public void setManiabilite(int maniabilite) {
-		this.maniabilite = maniabilite;
-	}
-
-	public int getParade() {
-		return parade;
-	}
-
-	public void setParade(int parade) {
-		this.parade = parade;
-	}
-
-	public int getParade_arme() {
-		return parade_arme;
-	}
-
-	public void setParade_arme(int parade_arme) {
-		this.parade_arme = parade_arme;
-	}
-
-	public int getAttaque() {
-		return attaque;
-	}
-
-	public void setAttaque(int attaque) {
-		this.attaque = attaque;
-	}
-
-	public String getNom() {
-		return nom;
-	}
-
-	public void setNom(String nom) {
-		this.nom = nom;
-	}
-
-
+*/
 }
