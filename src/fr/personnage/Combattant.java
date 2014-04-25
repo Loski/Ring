@@ -3,9 +3,7 @@ package fr.personnage;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import fr.capacite.Capacite;
-import fr.capacite.Epee;
-import fr.capacite.Remede;
+import fr.capacite.*;
 
 public class Combattant {
 	protected String nom;
@@ -21,9 +19,7 @@ public class Combattant {
 	protected int pointAction = 2;
 	protected boolean capitule = false, enVie = true;
 	protected boolean initiative;
-	
 	protected int nombreCapacite = 2;
-	
 	
 	public static final int MIN_XP = 1;
 	public static final int MAX_XP = 20;
@@ -101,7 +97,7 @@ public class Combattant {
 	}
 
 	public void capaciteDisponible() {
-		for (int i = 0; i < this.capacite.length; i++)
+		for (int i = 0; i < this.nombreCapacite; i++)
 			System.out.println(this.capacite[i].toString());
 	}
 
@@ -118,12 +114,8 @@ public class Combattant {
 
 	public void attaque(int i, Combattant cible) {
 		this.capacite[i].calculReussite(this);
-		if (true){
-			if(this.capacite[i] instanceof Epee){
-				
-			}
-		}
-			cible.lowVita(this.capacite[i].getImpact());
+		this.capacite[i].calculImpact(this);
+		cible.lowVita(this.capacite[i].getImpact());
 	}
 
 	public void addXP() {
@@ -269,6 +261,14 @@ public class Combattant {
 		this.vitalite = vitalite;
 	}
 
+	public boolean isEnVie() {
+		return this.vitalite > 0;
+	}
+
+	public void setEnVie(boolean enVie) {
+		this.enVie = enVie;
+	}
+
 	public int getExperience() {
 		return experience;
 	}
@@ -288,7 +288,10 @@ public class Combattant {
 	public void setPointAction(int i) {
 		this.pointAction = i;
 	}
-
+	public void enlevePointAction(){
+		if(this.pointAction > 0)
+			this.pointAction--;
+	}
 	public int getPointAction() {
 		return this.pointAction;
 	}

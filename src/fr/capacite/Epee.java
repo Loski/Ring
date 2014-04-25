@@ -29,29 +29,15 @@ public class Epee extends Capacite{
 		this.paradeEpee = sword.paradeEpee;
 		this.nom = new String(sword.nom);
 	}
-	
-/*
-	public void calculAttaque(Combattant combattant){
-		this.attaque =  (combattant.getForce() * this.impact) / 10_000; //p'tete 100
-	}
-	
-	public void calculParade(Combattant combattant){
-		this.parade = (combattant.getForce() * this.parade_arme) / 10_000; 
-	}
-	
-	public void calcul(Combattant combattant){
-		this.calculImpact(combattant.getForce(), this.impactEpee); 
-	}
-	
 
+	@Override
 	public void calculImpact(Combattant combattant) {
-		// TODO Auto-generated method stub
-		
+		System.out.print("epee");
+		super.calculImpact(combattant.getForce(), this.impactEpee);
 	}
 
 	public void calculReussite(Combattant combattant) {
 		super.calculReussite(combattant.getDexterite(), this.maniabilite);
 	}
 
-*/
 }

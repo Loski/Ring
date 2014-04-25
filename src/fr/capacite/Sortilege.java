@@ -19,7 +19,7 @@ public abstract class Sortilege extends Capacite {
 			this.facilite = facilite;
 		}
 	}
-	
+	/* Pour différencier le type de sortilège */
 	public void initDescription(){
 		if(this.type == Capacite.ATTAQUE)
 			this.description = " c'est une a";
