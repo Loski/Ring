@@ -5,7 +5,7 @@ public abstract class Capacite implements Action{
 	public static final int MIN_CAPACITE = 2;
 	public static final int MAX_CAPACITE = 9;
 	
-	public String description;
+	protected String description;
 	protected int categorie;
 	protected String nom;
 	protected int type;

@@ -2,13 +2,13 @@ package fr.capacite;
 
 import fr.personnage.Combattant;
 
-public abstract class Sortilege extends Capacite {
+public class Sortilege extends Capacite {
 	private int efficacite;
 	private int facilite;
 	// Il faut définir le type pour savoir si c'est un sortilège défensif, guérisseur ou agressif
 	
 	public Sortilege(){
-		super("unknow", Capacite.ATTAQUE, Capacite.MAGIE, "uknow");
+		super("Sortilege de feu", Capacite.ATTAQUE, Capacite.MAGIE," C'est un sort d'attaque");
 		this.efficacite = this.facilite = 50;
 	}
 	
@@ -19,6 +19,7 @@ public abstract class Sortilege extends Capacite {
 			this.facilite = facilite;
 		}
 	}
+	
 	/* Pour différencier le type de sortilège */
 	public void initDescription(){
 		if(this.type == Capacite.ATTAQUE)

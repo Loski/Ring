@@ -6,10 +6,10 @@ public class Remede extends Capacite {
 
 	private int facilite;
 	private int efficacite;
-	public static final String description = "Heal yourself";
 
 	public Remede() {
 		this.efficacite = this.facilite = 50;
+		this.description = "Heal yourself";
 	}
 
 	public Remede(String nom, String description, int efficacite, int facilite) {
@@ -18,6 +18,7 @@ public class Remede extends Capacite {
 			this.efficacite = efficacite;
 			this.facilite = facilite;
 		}
+		this.description = "Heal yourself";
 	}
 
 	@Override
