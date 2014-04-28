@@ -11,7 +11,7 @@ public class Guerrier extends Combattant {
 		super(nom, force, dexterite, intelligence, concentration, vitalite, experience, capacite);
 	}
 
-	Guerrier(){
+	public Guerrier(){
 		super();
 	}
 	
@@ -19,7 +19,5 @@ public class Guerrier extends Combattant {
 		do{
 			super.init();
 		}while(force >= dexterite+10 && dexterite+10 >= intelligence +10 && intelligence +10 >= concentration);
-		System.out.print(this.toString());
-
 	}
 }

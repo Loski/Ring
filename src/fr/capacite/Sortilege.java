@@ -29,15 +29,11 @@ public abstract class Sortilege extends Capacite {
 			this.description = "heal";
 	}
 	
-	public void calculReussite(Combattant combattant) {
-		super.calculReussite(combattant.getConcentration(), this.facilite);
+	public int calculReussite(Combattant combattant) {
+		return super.calculReussite(combattant.getConcentration(), this.facilite);
 	}
 
-	public void calculImpact(Combattant combattant) {
-		super.calculImpact(combattant.getIntelligence(), this.efficacite);
-		if(this.type == Capacite.ATTAQUE){
-			// On vire des dégats selon le type et l'impact de la parade de l'autre joueur 
-		}
+	public int calculImpact(Combattant combattant) {
+		return super.calculImpact(combattant.getIntelligence(), this.efficacite);
 	}
-	
 }

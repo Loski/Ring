@@ -20,6 +20,7 @@ public class Duel {
 	public boolean finCombat(){
 		return !this.combattant[0].isCapitule() && !this.combattant[1].isCapitule() && this.combattant[0].isEnVie() &&  this.combattant[1].isEnVie(); 
 	}
+	
 	public void choixClasse(int i){
 		Scanner sc = new Scanner(System.in);
 		int choix;
@@ -49,9 +50,8 @@ public class Duel {
 		do{ 
 			Tour tour =  new Tour(duel.combattant);
 			tour.jouer(0, 1);
-			System.out.print(duel.combattant[0]);
 			System.out.print(duel.combattant[1]);
-		}while(true);
+		}while(duel.finCombat());
 	}
 	
 }

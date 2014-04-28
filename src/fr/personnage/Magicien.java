@@ -11,8 +11,8 @@ public class Magicien extends Combattant {
 	public Magicien(String nom, int force, int dexterite, int intelligence, int concentration, int vitalite, int experience, Capacite[] capacite) {
 		super(nom, force, dexterite, intelligence, concentration, vitalite, experience, capacite);
 	}
-
 	public Magicien(){
 		super();
 	}
+	
 }

@@ -1,15 +1,11 @@
 package fr.capacite;
 
-import fr.personnage.Combattant;
-
 public abstract class Capacite implements Action{
 
 	public static final int MIN_CAPACITE = 2;
 	public static final int MAX_CAPACITE = 9;
 	
 	public String description;
-	protected int reussite;
-	protected int impact;
 	protected int categorie;
 	protected String nom;
 	protected int type;
@@ -18,14 +14,7 @@ public abstract class Capacite implements Action{
 	public Capacite(){
 		
 	}
-	public Capacite(String description, int reussite, int impact, int categorie, String nom, int type) {
-		this.description = description;
-		this.reussite = reussite;
-		this.impact = impact;
-		this.categorie = categorie;
-		this.nom = nom;
-		this.type = type;
-	}
+	
 	public Capacite(String nom, int type, int categorie, String description){
 		this.nom = nom;
 		this.type = type;
@@ -33,12 +22,13 @@ public abstract class Capacite implements Action{
 		this.description = description;
 	}
 	
-	public void calculImpact(int cara_Perso, int cara_Capa) {
-		this.impact = (cara_Capa * cara_Perso) / 100;
+
+	public int calculImpact(int cara_Perso, int cara_Capa) {
+		return (cara_Capa * cara_Perso) / 100;
 	}	
 	
-	public void calculReussite(int cara_Perso, int cara_Capa) {
-		this.reussite = (cara_Perso * cara_Capa) / 10_000;
+	public int calculReussite(int cara_Perso, int cara_Capa) {
+		return (cara_Perso * cara_Capa) / 10_000;
 	}
 
 	public String getDescription() {
@@ -47,18 +37,7 @@ public abstract class Capacite implements Action{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public int getReussite() {
-		return reussite;
-	}
-	public void setReussite(int reussite) {
-		this.reussite = reussite;
-	}
-	public int getImpact() {
-		return impact;
-	}
-	public void setImpact(int impact) {
-		this.impact = impact;
-	}
+
 	public int getCategorie() {
 		return categorie;
 	}

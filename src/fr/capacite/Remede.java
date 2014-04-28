@@ -26,11 +26,11 @@ public class Remede extends Capacite {
 				+ " facilite = " + this.facilite + "]";
 	}
 
-	public void calculReussite(Combattant combattant) {
-		super.calculReussite(combattant.getDexterite(), this.facilite);
+	public int calculReussite(Combattant combattant) {
+		return super.calculReussite(combattant.getDexterite(), this.facilite);
 	}
-
-	public void calculImpact(Combattant combattant) {
-		super.calculImpact(combattant.getDexterite(), this.efficacite);
+	
+	public int calculImpact(Combattant combattant) {
+		return super.calculImpact(combattant.getDexterite(), this.efficacite);
 	}
 }

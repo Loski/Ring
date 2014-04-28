@@ -17,7 +17,6 @@ public class Epee extends Capacite{
 	public Epee(int impact,int maniabilite, int parade, String nom, String description){
 		super(nom, Capacite.EPEE, Capacite.PHYSIQUE, description);
 		if(impactEpee + maniabilite + paradeEpee == 100  && parade >= 20 && impactEpee >=20 && maniabilite >= 20){
-			this.impact = impact;
 			this.maniabilite = maniabilite;
 			this.paradeEpee = parade;
 		}
@@ -30,14 +29,14 @@ public class Epee extends Capacite{
 		this.nom = new String(sword.nom);
 	}
 
-	@Override
-	public void calculImpact(Combattant combattant) {
-		System.out.print("epee");
-		super.calculImpact(combattant.getForce(), this.impactEpee);
-	}
+	
 
-	public void calculReussite(Combattant combattant) {
-		super.calculReussite(combattant.getDexterite(), this.maniabilite);
+	public int calculImpact(Combattant combattant) {
+		return super.calculImpact(combattant.getForce(), this.impactEpee);
+	}
+	@Override
+	public int calculReussite(Combattant combattant) {
+		return super.calculReussite(combattant.getDexterite(), this.maniabilite);
 	}
 
 }

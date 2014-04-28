@@ -6,6 +6,7 @@ import java.util.Scanner;
 import fr.capacite.*;
 
 public class Combattant {
+	
 	protected String nom;
 	protected int force;
 	protected int dexterite;
@@ -101,21 +102,35 @@ public class Combattant {
 			System.out.println(this.capacite[i].toString());
 	}
 
-
+	/**
+	 * Permet de soigner le combattant courrant
+	 * @param i
+	 * indice de la capacité
+	 */
 	public void soin(int i) {
-		this.capacite[i].calculReussite(this);
-		if (true)
-			this.addVita(this.capacite[i].getImpact());
+		int reussite = this.capacite[i].calculReussite(this);
+		this.addVita(this.capacite[i].calculImpact(this));
 	}
-	
+	/**
+	 * Permet d'enclencher une parade pour le combattant courrant
+	 * @param i
+	 * indice de la capacité
+	 */
 	public void parade(int i){
 		this.capacite[i].calculReussite(this);
 	}
-
+	
+	/**
+	 * Permet d'enclencher une attaque sur un combattant cible
+	 * @param i
+	 * indice de la capacité
+	 * @param cible
+	 * Cible de l'attaque
+	 */
 	public void attaque(int i, Combattant cible) {
-		this.capacite[i].calculReussite(this);
-		this.capacite[i].calculImpact(this);
-		cible.lowVita(this.capacite[i].getImpact());
+		int reussite = this.capacite[i].calculReussite(this);
+		int impact = this.capacite[i].calculImpact(this);
+		cible.lowVita(impact);
 	}
 
 	public void addXP() {
@@ -159,24 +174,16 @@ public class Combattant {
 			this.intelligence = sc.nextInt();
 			System.out.println("Concentration?");
 			this.concentration = sc.nextInt();
-		} while ((this.dexterite + this.force + this.concentration + this.intelligence) >= (100 + this.experience)); // vérifier
-																														// la
-																														// condi
-																														// j'sais
-																														// plus
-																														// si
-																														// c'est
-																														// >=
-																														// ou
-																														// >
-		this.vitalite = 200
-				+ this.experience
-				* 3
-				- (this.force + this.dexterite + this.intelligence + this.concentration);
-
+		} while ((this.dexterite + this.force + this.concentration + this.intelligence) > (100 + this.experience));
 	}
-
-	@Override
+	
+	/**
+	 * Initiali
+	 */
+	public void initVita(){
+		this.vitalite = 200 + this.experience * 3 - (this.force + this.dexterite + this.intelligence + this.concentration);
+	}
+	
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
