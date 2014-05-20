@@ -1,4 +1,6 @@
 package fr.personnage;
+import java.util.ArrayList;
+
 import fr.capacite.*;
 
 public class Guerrier extends Combattant {
@@ -7,7 +9,7 @@ public class Guerrier extends Combattant {
 		// TODO Auto-generated constructor stub
 	}
 
-	public Guerrier(String nom, int force, int dexterite, int intelligence, int concentration, int vitalite, int experience, Capacite[] capacite) {
+	public Guerrier(String nom, int force, int dexterite, int intelligence, int concentration, int vitalite, int experience, ArrayList<Capacite> capacite) {
 		super(nom, force, dexterite, intelligence, concentration, vitalite, experience, capacite);
 	}
 
@@ -22,7 +24,7 @@ public class Guerrier extends Combattant {
 	}
 	public void initCapacite(){
 		super.initCapacite();
-		capacite[0] = new Epee();
-		capacite[1] = new Bouclier();
+		this.capacite.add(new Epee());
+		this.capacite.add(new Bouclier());
 	}
 }

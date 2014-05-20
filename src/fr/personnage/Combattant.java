@@ -15,7 +15,7 @@ public class Combattant {
 	protected int concentration;
 	protected int vitalite;
 	protected int experience;
-	protected ArrayList<Capacite[]> capacite;
+	protected ArrayList<Capacite> capacite;
 	protected int pointAction = 2;
 	protected boolean capitule, enVie; 
 	protected int nombreCapacite = 2;
@@ -23,16 +23,17 @@ public class Combattant {
 	protected int protectionPhysique;
 	public static final int MIN_XP = 1;
 	public static final int MAX_XP = 20;
+	public static final int MAX_CAPACITE = 9;
 
 	public Combattant() {
 		this.nom = new String("unknow");
-		this.capacite = new ArrayList<Capacite[]>();
+		this.capacite = new ArrayList<Capacite>();
 		this.capitule = false;
 		this.enVie = true;
 	}
 
 	public Combattant(String nom, int force, int dexterite, int intelligence,
-			int concentration, int vitalite, int experience, ArrayList<Capacite[]> capacite) {
+			int concentration, int vitalite, int experience, ArrayList<Capacite> capacite) {
 			this.nom = nom;
 			this.experience = Combattant.MIN_XP;
 			this.experience = experience;
@@ -58,7 +59,7 @@ public class Combattant {
 			this.concentration = concentration;
 			this.vitalite = vitalite;
 		}
-		this.capacite = new ArrayList<Capacite[]>();
+		this.capacite = new ArrayList<Capacite>();
 	}
 
 	public Combattant(Combattant combattant) {
@@ -85,7 +86,7 @@ public class Combattant {
 	}
 
 	public void initCapacite() {
-		this.capacite = new ArrayList<Capacite[]>();
+		this.capacite = new ArrayList<Capacite>();
 	}
 	
 	public void capituler(){
@@ -93,9 +94,8 @@ public class Combattant {
 	}
 	public void capaciteDisponible() {
 		for (int i = 0; i < this.nombreCapacite; i++)
-			System.out.println(i+1 + "\t"+this.capacite[i].toString());
+			System.out.println(i+1 + "\t"+this.capacite.get(i).toString());
 	}
-
 	/**
 	 * Permet de soigner le combattant courrant
 	 * @param i
@@ -103,9 +103,9 @@ public class Combattant {
 	 * @message d'action
 	 */
 	public String soin(int i) {
-		if(this.capacite[i].calculReussite(this)){
-		this.addVita(this.capacite[i].calculImpact(this));
-			return "Soin de :" + this.capacite[i].calculImpact(this); // 	On retourne un string pour l'aff graph.
+		if(this.capacite.get(i).calculReussite(this)){
+		this.addVita(this.capacite.get(i).calculImpact(this));
+			return "Soin de :" + this.capacite.get(i).calculImpact(this); // 	On retourne un string pour l'aff graph.
 		}
 		else
 			return "Echec du soin";
@@ -118,13 +118,13 @@ public class Combattant {
 	 * @return message d'action
 	 */
 	public String parade(int i){
-		if(this.capacite[i].calculReussite(this)){
-			switch(this.capacite[i].getDommage()){
+		if(this.capacite.get(i).calculReussite(this)){
+			switch(this.capacite.get(i).getDommage()){
 				case Capacite.MAGIQUE:
-					this.protectionMagique +=  this.capacite[i].calculImpact(this); //+= s'il lance deux parades magiques dans le même tour
+					this.protectionMagique +=  this.capacite.get(i).calculImpact(this); //+= s'il lance deux parades magiques dans le même tour
 					break;
 				case Capacite.PHYSIQUE:
-					this.protectionPhysique += this.capacite[i].calculImpact(this);
+					this.protectionPhysique += this.capacite.get(i).calculImpact(this);
 					break;
 			}
 			return "Protection magique : " + protectionMagique+"\nProtection physique : " + protectionPhysique;
@@ -144,11 +144,11 @@ public class Combattant {
 	 */
 	public String attaque(int i, Combattant cible) {
 		
-		if(this.capacite[i].calculReussite(this)){
-			int impact = this.capacite[i].calculImpact(this);
-			switch(this.capacite[i].getDommage()){
+		if(this.capacite.get(i).calculReussite(this)){
+			int impact = this.capacite.get(i).calculImpact(this);
+			switch(this.capacite.get(i).getDommage()){
 			case Capacite.PHYSIQUE:
-				if(this.capacite[i].getDommage() == Capacite.EPEE)
+				if(this.capacite.get(i).getDommage() == Capacite.EPEE)
 					impact -= cible.protectionPhysique;
 				else
 					impact -= cible.protectionPhysique/3;
@@ -218,9 +218,25 @@ public class Combattant {
 			System.out.println("La concentration est égal à "+ this.concentration);
 			}while ((this.dexterite + this.force + this.concentration + this.intelligence) > (100 + this.experience));
 	}
-	
+	public void choixNouvelleCapacite(){
+		this.capaciteDisponible();
+		int choix;
+		Scanner sc = new Scanner(System.in);
+		if(this.capacite.size() == Combattant.MAX_CAPACITE){
+		do{
+			System.out.println("Capacité à remplacer");
+			choix = sc.nextInt();
+		}while(choix <= 0 && choix > this.capacite.size());
+		
+	}
+		}
+	public static void main(String[] Arg){
+		Athlete a = new Athlete();
+		a.initCapacite();
+		System.out.println(a.capacite.size());
+	}
 	/**
-	 * Initiali
+	 * Initialise le début du combat pour le combattant courrant
 	 */
 	public void preparationCombattant(){ // futur changement de nom
 		this.capitule = false;
@@ -235,35 +251,6 @@ public class Combattant {
 		this.protectionMagique = this.protectionPhysique = 0;
 	}
 	
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Combattant other = (Combattant) obj;
-		if (!Arrays.equals(capacite, other.capacite))
-			return false;
-		if (concentration != other.concentration)
-			return false;
-		if (dexterite != other.dexterite)
-			return false;
-		if (experience != other.experience)
-			return false;
-		if (force != other.force)
-			return false;
-		if (intelligence != other.intelligence)
-			return false;
-		if (nom == null) {
-			if (other.nom != null)
-				return false;
-		} else if (!nom.equals(other.nom))
-			return false;
-		if (vitalite != other.vitalite)
-			return false;
-		return true;
-	}
 
 	public String getNom() {
 		return nom;
@@ -329,11 +316,11 @@ public class Combattant {
 		this.experience = experience;
 	}
 
-	public Capacite[] getCapacite() {
+	public ArrayList<Capacite> getCapacite() {
 		return capacite;
 	}
 
-	public void setCapacite(Capacite[] capacite) {
+	public void setCapacite(ArrayList <Capacite> capacite) {
 		this.capacite = capacite;
 	}
 

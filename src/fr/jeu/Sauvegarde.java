@@ -26,7 +26,7 @@ public class Sauvegarde {
 			
 			for(int i=0; i<c.getNombreCapacite();i++)
 			{
-				Sauvegarde.sauvegarderCapacite(c.getCapacite()[i]);
+				Sauvegarde.sauvegarderCapacite(c.getCapacite().get(i));
 			}
 			
 			output.flush();

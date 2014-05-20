@@ -8,6 +8,7 @@ public class Remede extends Capacite {
 	private int efficacite;
 
 	public Remede() {
+		this.nom = new String("de génie");
 		this.efficacite = this.facilite = 50;
 		this.description = "Heal yourself";
 	}
@@ -44,7 +45,7 @@ public class Remede extends Capacite {
 
 	@Override
 	public String toString() {
-		return "Remede" +nom+"[facilite=" + facilite + ", efficacite=" + efficacite
+		return "Remede " +nom+"[facilite=" + facilite + ", efficacite=" + efficacite
 				+ "]";
 	}
 }

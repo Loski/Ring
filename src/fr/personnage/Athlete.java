@@ -1,11 +1,13 @@
 package fr.personnage;
 
+import java.util.ArrayList;
+
 import fr.capacite.*;
 
 public class Athlete extends Combattant {
 
-	public Athlete(String nom, int force, int dexterite, int intelligence, int concentration, int vitalite, int experience) {
-		super(nom, force, dexterite, intelligence, concentration, vitalite, experience);
+	public Athlete(String nom, int force, int dexterite, int intelligence, int concentration, int vitalite, int experience, ArrayList<Capacite> capacite) {
+		super(nom, force, dexterite, intelligence, concentration, vitalite, experience, capacite);
 	}
 
 	public Athlete() {
@@ -22,7 +24,7 @@ public class Athlete extends Combattant {
 	}
 	public void initCapacite(){
 		super.initCapacite();
-		capacite[0] = new Epee();
-		capacite[1] = new Remede();
+		this.capacite.add(new Epee());
+		this.capacite.add(new Remede());
 	}
 }

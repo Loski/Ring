@@ -8,6 +8,8 @@ import fr.personnage.*;
 
 public class Duel {
 	private  Combattant[] combattant;
+	private int joueur1 = 0, joueur2 = 1;
+
 	
 	public Duel(){
 		this.combattant = new Combattant[2];
@@ -23,6 +25,7 @@ public class Duel {
 		for(int i = 0; i<2;i++){
 			this.combattant[i].preparationCombattant();
 		}
+		this.initiative();
 	}
 	
 	public boolean finCombat(){
@@ -87,7 +90,7 @@ public class Duel {
 		if(choix == this.combattant[joueurActuel].getNombreCapacite())
 			this.combattant[joueurActuel].setCapitule(true);
 		else
-			switch (this.combattant[joueurActuel].getCapacite()[choix].getType()) {
+			switch (this.combattant[joueurActuel].getCapacite().get(choix).getType()) {
 			case Capacite.ATTAQUE:
 				this.combattant[joueurActuel].attaque(choix, combattant[cible]);
 				break;
@@ -107,20 +110,13 @@ public class Duel {
 				break;
 			}
 	}
-
-	public static void main(String[] args) {
-		Duel duel = new Duel();
-		duel.combattant[0] = new Athlete();
-		duel.combattant[1] = new Magicien();
-		duel.combattant[0].initCapacite();		
-		duel.combattant[1].initCapacite();
-		int joueur1 = 0, joueur2 = 1;
-		Sauvegarde.sauvegarder(duel.combattant[0]);
-		if(duel.combattant[0].getExperience() > duel.combattant[1].getExperience()){
+	
+	public void initiative(){
+		if(combattant[0].getExperience() > combattant[1].getExperience()){
 			joueur1 = 0;
 			joueur2 = 1;
 		}
-		else if(duel.combattant[0].getExperience() < duel.combattant[1].getExperience())
+		else if(combattant[0].getExperience() < combattant[1].getExperience())
 		{	
 			joueur1 = 1;
 			joueur2 = 0;
@@ -135,14 +131,26 @@ public class Duel {
 				joueur2 =1;
 			}	
 		}
-
-		duel.demarrageDuel();		
-		do{ 
-			System.out.println(duel.affJoueur(joueur1));
-			duel.jouer(joueur1, joueur2);
-			System.out.println(duel.affJoueur(joueur2));
-			duel.jouer(joueur2, joueur1 );
-		}while(duel.finCombat());
+	}
+		public void tour(){
+			do{ 
+				System.out.println(this.affJoueur(this.joueur1));
+				this.jouer(joueur1, joueur2);
+				System.out.println(this.affJoueur(joueur2));
+				this.jouer(joueur2, joueur1 );
+			}while(this.finCombat());
+		}
+	public static void main(String[] args) {
+		Duel duel = new Duel();
+		duel.combattant[0] = new Athlete();
+		duel.combattant[1] = new Magicien();
+		duel.combattant[0].initCapacite();		
+		duel.combattant[1].initCapacite();
+		Sauvegarde.sauvegarder(duel.combattant[0]);
+		
+		duel.demarrageDuel();
+		
+		duel.tour();
 		System.out.println("Le joueur " + duel.combattant[duel.gagnant()].getNom()+ " a gagné.");
 	}
 	public void affichageJouer(){
