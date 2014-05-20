@@ -20,4 +20,9 @@ public class Guerrier extends Combattant {
 			super.init();
 		}while(force >= dexterite+10 && dexterite+10 >= intelligence +10 && intelligence +10 >= concentration);
 	}
+	public void initCapacite(){
+		super.initCapacite();
+		capacite[0] = new Epee();
+		capacite[1] = new Bouclier();
+	}
 }

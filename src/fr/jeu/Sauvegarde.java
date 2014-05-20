@@ -1,14 +1,18 @@
 package fr.jeu;
 import java.io.*;
 import java.util.*;
+
+import fr.capacite.Capacite;
 import fr.personnage.*;
 
 public class Sauvegarde {
 
-	public void sauvegarder(Combattant c){
+	public static void sauvegarder(Combattant c){
 		
 		try
 		{
+			File f = new File("Sauvegardes/");
+			f.mkdir();
 			FileWriter fw = new FileWriter("Sauvegardes/"+c.getNom()+".save",false);
 			BufferedWriter output = new BufferedWriter(fw);
 			output.write(c.getNom()+"\n");
@@ -18,21 +22,34 @@ public class Sauvegarde {
 			output.write(c.getConcentration()+"\n");
 			output.write(c.getVitalite()+"\n");
 			output.write(c.getExperience()+"\n");
-			output.write(c.getCapacite().length+"\n");
-			for(int i=0; i<c.getCapacite().length;i++)
+			output.write(c.getNombreCapacite()+"\n");
+			
+			for(int i=0; i<c.getNombreCapacite();i++)
 			{
-				output.write(c.getCapacite()[i].getNom()+"\n");
-				output.write(c.getCapacite()[i].getCategorie()+"\n");
-				output.write(c.getCapacite()[i].getType()+"\n");
-				output.write(c.getCapacite()[i].getDescription()+"\n");
+				Sauvegarde.sauvegarderCapacite(c.getCapacite()[i]);
 			}
+			
 			output.flush();
 			output.close();
 			
+		}catch(IOException ioe){System.out.print("Probleme lors de la Sauvegarde du Combattant "+c.getNom());};
+	}
+	
+	public static void sauvegarderCapacite(Capacite c){
+		
+		try{
+		FileWriter fw = new FileWriter("Sauvegardes/"+c.getNom()+".save",false);
+		BufferedWriter output = new BufferedWriter(fw);
+		output.write(c.getNom()+"\n");
+		output.write(c.getDommage()+"\n");
+		output.write(c.getType()+"\n");
+		output.write(c.getDescription()+"\n");
+		output.flush();
+		output.close();
 		}catch(IOException ioe){};
 	}
 	
-	public void charger(Combattant c){
+	public static void charger(Combattant c){
 		
 		File fichier = new File("Sauvegardes/"+c.getNom()+".save");
 		

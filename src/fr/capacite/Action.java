@@ -3,8 +3,8 @@ package fr.capacite;
 import fr.personnage.Combattant;
 
 public interface Action {
-	public static final int ATTAQUE = 1, PARADE = 2, SOIN = 3, EPEE = 4;
-	public static final int PHYSIQUE = 1, MAGIE = 2;
+	public static final int ATTAQUE = 1, PARADE = 2, SOIN = 3, EPEE = 4; //type
+	public static final int PHYSIQUE = 1, MAGIQUE = 2; //dommage
 	
 	/**
 	 * Calcule l'impact de la capacité courante
@@ -20,5 +20,5 @@ public interface Action {
 	 * 	Le combattant courrant
 	 * @return valeur de la réussite de cette capacité
 	 */
-	public abstract int calculReussite(Combattant combattant);
+	public abstract boolean calculReussite(Combattant combattant);
 }

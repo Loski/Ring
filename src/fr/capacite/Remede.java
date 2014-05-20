@@ -13,25 +13,38 @@ public class Remede extends Capacite {
 	}
 
 	public Remede(String nom, String description, int efficacite, int facilite) {
-		super(nom, Capacite.SOIN, Capacite.MAGIE, description);
+		super(nom, Capacite.SOIN, Capacite.MAGIQUE, description);
 		if ((efficacite + facilite) == 100 && efficacite >= 20 && facilite >= 20) {
 			this.efficacite = efficacite;
 			this.facilite = facilite;
 		}
 		this.description = "Heal yourself";
 	}
-
-	@Override
-	public String toString() {
-		return "[Remède : " + "efficacite = " + this.efficacite
-				+ " facilite = " + this.facilite + "]";
+	public Remede(Remede r){
+		super(r.nom, r.type, r.dommage, r.description);
+		this.facilite = r.facilite;
+		this.efficacite =  r.efficacite;
+	}
+	public Remede(Capacite c){
+		super(c.nom, c.type, c.dommage, c.description);
+		Remede r = (Remede) c;
+		this.facilite = r.facilite;
+		this.efficacite =  r.efficacite;
 	}
 
-	public int calculReussite(Combattant combattant) {
-		return super.calculReussite(combattant.getDexterite(), this.facilite);
+
+
+	public boolean calculReussite(Combattant combattant) {
+		return attaqueReussie(calculReussite(combattant.getDexterite(), this.facilite));
 	}
 	
 	public int calculImpact(Combattant combattant) {
-		return super.calculImpact(combattant.getDexterite(), this.efficacite);
+		return calculImpact(combattant.getDexterite(), this.efficacite);
+	}
+
+	@Override
+	public String toString() {
+		return "Remede" +nom+"[facilite=" + facilite + ", efficacite=" + efficacite
+				+ "]";
 	}
 }

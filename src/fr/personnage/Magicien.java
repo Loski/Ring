@@ -1,5 +1,5 @@
 package fr.personnage;
-import fr.capacite.*;;
+import fr.capacite.*;
 
 public class Magicien extends Combattant {
 
@@ -13,6 +13,12 @@ public class Magicien extends Combattant {
 	}
 	public Magicien(){
 		super();
+	}
+	public void initCapacite(){
+		super.initCapacite();
+		capacite[0] = new Sortilege(Capacite.ATTAQUE);
+		capacite[1] = new Sortilege(Capacite.SOIN);
+		
 	}
 	
 }

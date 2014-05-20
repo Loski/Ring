@@ -1,5 +1,7 @@
 package fr.capacite;
 
+import java.util.Scanner;
+
 import fr.personnage.Combattant;
 
 public class Epee extends Capacite{
@@ -28,15 +30,36 @@ public class Epee extends Capacite{
 		this.paradeEpee = sword.paradeEpee;
 		this.nom = new String(sword.nom);
 	}
-
 	
+	public Epee(Capacite c){
+		super(c.nom, c.type, c.dommage, c.description);
+		Epee e = (Epee) c;
+		this.impactEpee = e.impactEpee;
+		this.maniabilite =  e.maniabilite;
+		this.paradeEpee = e.paradeEpee;
+	}
+
+	public static boolean choixType(){
+		int choix;
+		Scanner sc = new Scanner(System.in);
+		do{
+			choix = sc.nextInt();
+		}while(choix <=0 || choix >2);
+		return choix == 1; // cas attaque
+	}
 
 	public int calculImpact(Combattant combattant) {
 		return super.calculImpact(combattant.getForce(), this.impactEpee);
 	}
 	@Override
-	public int calculReussite(Combattant combattant) {
-		return super.calculReussite(combattant.getDexterite(), this.maniabilite);
+	public boolean calculReussite(Combattant combattant) {
+		return attaqueReussie(calculReussite(combattant.getDexterite(), this.maniabilite));
+	}
+
+	@Override
+	public String toString() {
+		return "Epee " +nom+"[impactEpee=" + impactEpee + ", paradeEpee=" + paradeEpee
+				+ ", maniabilite=" + maniabilite + "]";
 	}
 
 }
