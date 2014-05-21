@@ -43,7 +43,7 @@ public class Sortilege extends Capacite {
 		return attaqueReussie(calculReussite(combattant.getConcentration(), this.facilite));
 	}
 
-	public int calculImpact(Combattant combattant) {
+	public int calculImpact(Combattant combattant, int type) {
 		return calculImpact(combattant.getIntelligence(), this.efficacite);
 	}
 

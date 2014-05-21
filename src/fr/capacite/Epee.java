@@ -48,8 +48,10 @@ public class Epee extends Capacite{
 		return choix == 1; // cas attaque
 	}
 
-	public int calculImpact(Combattant combattant) {
-		return super.calculImpact(combattant.getForce(), this.impactEpee);
+	public int calculImpact(Combattant combattant, int type) {
+		if(type == Capacite.ATTAQUE)
+			return calculImpact(combattant.getForce(), this.impactEpee);
+		return calculImpact(combattant.getForce(), this.paradeEpee);
 	}
 	@Override
 	public boolean calculReussite(Combattant combattant) {

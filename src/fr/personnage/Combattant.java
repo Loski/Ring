@@ -1,12 +1,11 @@
 package fr.personnage;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Scanner;
+import java.io.Serializable;
+import java.util.*;
 
 import fr.capacite.*;
 
-public class Combattant {
+public class Combattant implements Serializable{
 	
 	protected String nom;
 	protected int force;
@@ -18,13 +17,10 @@ public class Combattant {
 	protected ArrayList<Capacite> capacite;
 	protected int pointAction = 2;
 	protected boolean capitule, enVie; 
-	protected int nombreCapacite = 2;
 	protected int protectionMagique;
 	protected int protectionPhysique;
 	public static final int MIN_XP = 1;
 	public static final int MAX_XP = 20;
-	public static final int MAX_CAPACITE = 9;
-
 	public Combattant() {
 		this.nom = new String("unknow");
 		this.capacite = new ArrayList<Capacite>();
@@ -70,7 +66,7 @@ public class Combattant {
 		this.concentration = combattant.concentration;
 		this.vitalite = combattant.vitalite;
 		this.experience = combattant.experience;
-		//this.capacite = new Capacite(combattant.capacite);
+		this.capacite = new ArrayList<Capacite>(combattant.capacite);
 	}
 
 	public String toString() {
@@ -80,7 +76,7 @@ public class Combattant {
 		s += "\nnom = " + this.nom + "\nforce = " + force + "\ndexterite = "
 				+ dexterite + "\nintelligence = " + intelligence
 				+ "\nconcentration = " + concentration + "\nvitalite = "
-				+ vitalite + "\nexperience = " + experience;
+				+ vitalite + "\nprotection magique = "+protectionMagique + "\nprotectionPhysique = "+ protectionPhysique+"\nCapacité : "+capaciteString()+"\nexperience = " + experience;
 
 		return s;
 	}
@@ -92,8 +88,14 @@ public class Combattant {
 	public void capituler(){
 		this.capitule = true;
 	}
+	public String capaciteString(){
+		String s ="";
+		for(Capacite a : capacite)
+			s+=a.toString();
+		return s;
+	}
 	public void capaciteDisponible() {
-		for (int i = 0; i < this.nombreCapacite; i++)
+		for (int i = 0; i < this.capacite.size(); i++)
 			System.out.println(i+1 + "\t"+this.capacite.get(i).toString());
 	}
 	/**
@@ -104,8 +106,8 @@ public class Combattant {
 	 */
 	public String soin(int i) {
 		if(this.capacite.get(i).calculReussite(this)){
-		this.addVita(this.capacite.get(i).calculImpact(this));
-			return "Soin de :" + this.capacite.get(i).calculImpact(this); // 	On retourne un string pour l'aff graph.
+		this.addVita(this.capacite.get(i).calculImpact(this, Capacite.SOIN));
+			return "Soin de :" + this.capacite.get(i).calculImpact(this, Capacite.SOIN); // 	On retourne un string pour l'aff graph.
 		}
 		else
 			return "Echec du soin";
@@ -121,10 +123,10 @@ public class Combattant {
 		if(this.capacite.get(i).calculReussite(this)){
 			switch(this.capacite.get(i).getDommage()){
 				case Capacite.MAGIQUE:
-					this.protectionMagique +=  this.capacite.get(i).calculImpact(this); //+= s'il lance deux parades magiques dans le même tour
+					this.protectionMagique +=  this.capacite.get(i).calculImpact(this, Capacite.PARADE); //+= s'il lance deux parades magiques dans le même tour
 					break;
 				case Capacite.PHYSIQUE:
-					this.protectionPhysique += this.capacite.get(i).calculImpact(this);
+					this.protectionPhysique += this.capacite.get(i).calculImpact(this, Capacite.PARADE);
 					break;
 			}
 			return "Protection magique : " + protectionMagique+"\nProtection physique : " + protectionPhysique;
@@ -145,7 +147,7 @@ public class Combattant {
 	public String attaque(int i, Combattant cible) {
 		
 		if(this.capacite.get(i).calculReussite(this)){
-			int impact = this.capacite.get(i).calculImpact(this);
+			int impact = this.capacite.get(i).calculImpact(this, Capacite.ATTAQUE);
 			switch(this.capacite.get(i).getDommage()){
 			case Capacite.PHYSIQUE:
 				if(this.capacite.get(i).getDommage() == Capacite.EPEE)
@@ -222,7 +224,7 @@ public class Combattant {
 		this.capaciteDisponible();
 		int choix;
 		Scanner sc = new Scanner(System.in);
-		if(this.capacite.size() == Combattant.MAX_CAPACITE){
+		if(this.capacite.size() == Capacite.MAX_CAPACITE){
 		do{
 			System.out.println("Capacité à remplacer");
 			choix = sc.nextInt();
@@ -230,11 +232,7 @@ public class Combattant {
 		
 	}
 		}
-	public static void main(String[] Arg){
-		Athlete a = new Athlete();
-		a.initCapacite();
-		System.out.println(a.capacite.size());
-	}
+
 	/**
 	 * Initialise le début du combat pour le combattant courrant
 	 */
@@ -342,13 +340,9 @@ public class Combattant {
 	public void setCapitule(boolean capitule) {
 		this.capitule = capitule;
 	}
-	public int getNombreCapacite() {
-		return nombreCapacite;
-	}
 
-	public void setNombreCapacite(int nombreCapacite) {
-		this.nombreCapacite = nombreCapacite;
-	}
+
+
 
 
 }

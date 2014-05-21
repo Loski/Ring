@@ -25,7 +25,7 @@ public class Bouclier extends Capacite {
 		this.maniabilite =  b.maniabilite;
 	}
 	@Override
-	public int calculImpact(Combattant combattant) {
+	public int calculImpact(Combattant combattant, int type) {
 		return calculImpact(combattant.getForce(), this.protection);
 	}
 

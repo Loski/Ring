@@ -39,7 +39,7 @@ public class Remede extends Capacite {
 		return attaqueReussie(calculReussite(combattant.getDexterite(), this.facilite));
 	}
 	
-	public int calculImpact(Combattant combattant) {
+	public int calculImpact(Combattant combattant, int type) {
 		return calculImpact(combattant.getDexterite(), this.efficacite);
 	}
 

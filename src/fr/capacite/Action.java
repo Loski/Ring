@@ -13,7 +13,7 @@ public interface Action {
 	 * @return valeur de l'impact de cette capacité
 	 */
 	
-	public abstract int calculImpact(Combattant combattant);
+	public abstract int calculImpact(Combattant combattant, int type);
 	/**
 	 * Calcule la réussite de la capacité courante
 	 * @param combattant

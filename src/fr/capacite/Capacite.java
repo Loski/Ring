@@ -1,6 +1,7 @@
 package fr.capacite;
-import fr.capacite.*;
-public abstract class Capacite implements Action{
+import java.io.Serializable;
+
+public abstract class Capacite implements Action,Serializable{
 
 	public static final int MIN_CAPACITE = 2;
 	public static final int MAX_CAPACITE = 9;
@@ -42,7 +43,7 @@ public abstract class Capacite implements Action{
 		else 
 			return new Remede(c);
 	}
-
+	
 	public String getDescription() {
 		return description;
 	}
@@ -67,6 +68,12 @@ public abstract class Capacite implements Action{
 	}
 	public void setType(int type){
 		this.type = type;
+	}
+
+	@Override
+	public String toString() {
+		return "description=" + description + ", dommage=" + dommage
+				+ ", nom=" + nom + ", type=" + type;
 	}
 	
 }
