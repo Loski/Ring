@@ -10,6 +10,8 @@ public class Remede extends Capacite {
 	public Remede() {
 		this.nom = new String("de génie");
 		this.efficacite = this.facilite = 50;
+		this.type = Capacite.SOIN;
+		this.dommage = Capacite.MAGIQUE;
 		this.description = "Heal yourself";
 	}
 
@@ -21,13 +23,14 @@ public class Remede extends Capacite {
 		}
 		this.description = "Heal yourself";
 	}
+	
 	public Remede(Remede r){
 		super(r.nom, r.type, r.dommage, r.description);
 		this.facilite = r.facilite;
 		this.efficacite =  r.efficacite;
 	}
 	public Remede(Capacite c){
-		super(c.nom, c.type, c.dommage, c.description);
+		super(c);
 		Remede r = (Remede) c;
 		this.facilite = r.facilite;
 		this.efficacite =  r.efficacite;
@@ -36,7 +39,7 @@ public class Remede extends Capacite {
 
 
 	public boolean calculReussite(Combattant combattant) {
-		return attaqueReussie(calculReussite(combattant.getDexterite(), this.facilite));
+		return actionReussie(calculReussite(combattant.getDexterite(), this.facilite));
 	}
 	
 	public int calculImpact(Combattant combattant, int type) {

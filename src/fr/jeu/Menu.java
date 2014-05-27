@@ -10,14 +10,25 @@ public class Menu {
 		return "------------------------------------MENU-------------------------------------\n"+s+"\n-----------------------------------------------------------------------------";
 	}
 	
-	private static int choix(){
+	public static int choix(){
 		
 		int choix =-1;
-		Scanner sc = new Scanner(System.in);
+		System.out.print(":");
+		while(choix==-1)	
+		try{
+				choix = new Scanner(System.in).nextInt();
+			}catch(InputMismatchException e){System.out.println("ERREUR: Veuillez rentrer un entier\n");}
 
-			System.out.print(":");
-			try{
-				choix = sc.nextInt();
+		return choix;
+	}
+	
+	//A CONTINUER CAR J'AI UNE PUTAIN DE FLEMME LA
+	public static String choixString(){
+		
+		String choix ="?";
+		System.out.print(":");
+		try{
+				choix = new Scanner(System.in).next();
 			}catch(InputMismatchException e){System.out.println("ERREUR: Veuillez rentrer un entier\n");}
 
 		return choix;
@@ -31,9 +42,7 @@ public class Menu {
 		int choix=-1;
 		do{
 			System.out.println(stringMenu("(1)Jouer contre l'ordinateur\n(2)Jouer contre un autre Joueur"));
-			
 			choix = choix();
-			
 		}while(choix<1||choix>2);
 		
 		if(choix==2)
@@ -43,8 +52,8 @@ public class Menu {
 
 	/**
 	 * 
-	 * @param i
-	 *            Indice du combattant
+	 * @return 
+	 * Retourne une classe fille de la classe Combattant
 	 */
 	public static Combattant choixClasse() {
 		Scanner sc = new Scanner(System.in);

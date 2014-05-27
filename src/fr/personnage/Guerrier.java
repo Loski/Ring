@@ -20,7 +20,7 @@ public class Guerrier extends Combattant {
 	public void init(){
 		do{
 			super.init();
-		}while(force >= dexterite+10 && dexterite+10 >= intelligence +10 && intelligence +10 >= concentration);
+		}while(force < dexterite+10 && dexterite+10 < intelligence +10 && intelligence +10 < concentration);
 	}
 	public void initCapacite(){
 		super.initCapacite();

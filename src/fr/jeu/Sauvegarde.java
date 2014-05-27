@@ -1,55 +1,130 @@
 package fr.jeu;
 
 import java.io.*;
-import java.util.*;
 
-import fr.capacite.Capacite;
 import fr.personnage.*;
 
 public class Sauvegarde {
 
-	public static void sauvegarder(Combattant c) {
-
+	/**
+	 * Sauvegarde une instance de Combattant dans le dossier Sauvegardes/Combattant/nomDuCombattant Remplace le fichier, si un fichier ayant le même
+	 * nom existe
+	 * 
+	 * @param c
+	 *        Le combattant à sauvegarder
+	 */
+	public static void sauvegarderCombattant(Combattant c) {
 		ObjectOutputStream oos;
 		try {
-			/*
-			 * File f = new File("Sauvegardes/"); f.mkdir(); FileWriter fw = new
-			 * FileWriter("Sauvegardes/"+c.getNom()+".save",false);
-			 * BufferedWriter output = new BufferedWriter(fw);
-			 */
-			oos = new ObjectOutputStream(new BufferedOutputStream(
-					new FileOutputStream(new File("game.txt"))));
+			File fichier = new File("Sauvegardes/Duel");
+			if (!fichier.exists())
+				fichier.mkdir();
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Combattant/" + c.getNom() + ".save"))));
 			oos.writeObject(c);
 			oos.close();
-
 		} catch (IOException ioe) {
-			System.out.print("Probleme lors de la Sauvegarde du Combattant "
-					+ c.getNom());
+			System.err.println("Probleme lors de la Sauvegarde du Combattant " + c.getNom() + ioe.getMessage());
 		}
-
 	}
 
-	public static Combattant charger(String chemin) {
+	/**
+	 * Sauvegarde une instance d'un duel dans le dossier Sauvegardes/Duel/nomduCombattant1_vs_nomduCombattant2. Remplace le fichier, si un fichier
+	 * ayant le même nom existe.
+	 * 
+	 * @param d
+	 *        Le duel à sauvegarder
+	 */
+	public static void sauvegarderDuel(Duel d) {
+		ObjectOutputStream oos;
 
-		// File fichier = new File("Sauvegardes/" + c.getNom() + ".save");
+		try {
+			File fichier = new File("Sauvegardes/Duel");
+			if (!fichier.exists())
+				fichier.mkdir();
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Duel/" + d.getCombattant()[0].getNom() + "_vs_" + d.getCombattant()[1].getNom() + ".save"))));
+			oos.writeObject(d);
+			oos.close();
+		} catch (IOException ioe) {
+			System.err.println("Probleme lors de la Sauvegarde du Duel" + ioe.toString());
+		}
+	}
+
+	/**
+	 * Affiche tous les fichiers contenant une sauvegarde puis demande au joueur de selectionner une sauvegarde particulière
+	 * 
+	 * @param chemin
+	 *        Chemin du répertoire où sont stockés les sauvegardes
+	 * @return Le chemin de la sauvegarde selectionnée
+	 */
+	public static String selectSauvegarde(String chemin) {
+		File fichier = new File(chemin);
+		String[] s = fichier.list();
+		int choix;
+		for (int i = 0; i < s.length; i++)
+			System.out.println((i + 1) + "\t" + s[i]);
+		do {
+			choix = Menu.choix() - 1;
+		} while (choix < 0 || choix > s.length);
+		return s[choix];
+	}
+
+	/**
+	 * Demande au joueur quelle sauvegarde il doit charger, puis récupère les informations dans un fichier texte de ce combattant
+	 * 
+	 * @return Une instance d'un combattant chargé à partir d'un fichier texte.
+	 */
+	public static Combattant chargerCombattant() {
+		String nomSauvegarde = selectSauvegarde("Sauvegardes/Combattant/");
 		ObjectInputStream ois;
 		Combattant c = null;
 		try {
-			ois = new ObjectInputStream(new BufferedInputStream(
-					new FileInputStream(new File("game.txt"))));
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Combattant/" + nomSauvegarde))));
 			c = new Combattant((Combattant) ois.readObject());
 			ois.close();
 		} catch (Exception e) {
-			System.out.print("Probleme lors du chargement du Combattant");
+			System.err.print("Probleme lors du chargement du Combattant" + nomSauvegarde);
 		}
 		return c;
+	}
+	
+	public static Combattant chargerCombattant(String chemin) {
+		ObjectInputStream ois;
+		Combattant c = null;
+		try {
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Combattant/"+chemin))));
+			c = new Combattant((Combattant) ois.readObject());
+			ois.close();
+		} catch (Exception e) {
+			System.err.print("Probleme lors du chargement du Combattant" + chemin);
+		}
+		return c;
+	}
+
+	/**
+	 * Demande à un joueur quelle sauvegarde il doit charger, puis récupère les informations dans un fichier texte
+	 * 
+	 * @return  Une instance d'un duel chargé à partir d'un fichier texte.
+	 */
+	public static Duel chargerDuel() {
+		String nomSauvegarde = selectSauvegarde("Sauvegardes/Duel/");
+		ObjectInputStream ois;
+		Duel d = null;
+		try {
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Duel/" + nomSauvegarde))));
+			d = new Duel((Duel) ois.readObject());
+			ois.close();
+		} catch (Exception e) {
+			System.out.print("Probleme lors du chargement du Duel");
+		}
+		return d;
 	}
 
 	public static void main(String[] arf) {
 		Combattant c = new Athlete(), a = null;
 		c.initCapacite();
-		sauvegarder(c);
-		a = charger("");
+		sauvegarderCombattant(c);
+		a = chargerCombattant("Athlete_inconnu.save");
 		System.out.println(a);
+		return;
 	}
 }
