@@ -22,6 +22,7 @@ public class Athlete extends Combattant {
 			super.init();
 		}while(this.intelligence < 20 && this.force < 20 && this.dexterite < 20 && this.concentration < 20);
 	}
+	
 	public void initCapacite(){
 		super.initCapacite();
 		this.capacite.add(new Epee());

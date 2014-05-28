@@ -1,0 +1,8 @@
+- faire en sorte que dans les noms des perso pas de caract interdits
+-créerles fctions pour chaque combattant pour incrémenter aléatoirement les caracts lors d'une victoire
+- vérifier s'il faut pas caster en athlète/magi au lieu de combattant dans les saves
+-finir les parades
+-transformer la fonction attaque qui doit stocker la valeur de l'attaque
+-créer un générateur de capacité + chargement des capa
+-dormir
+

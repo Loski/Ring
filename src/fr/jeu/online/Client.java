@@ -1,78 +1,46 @@
 package fr.jeu.online;
 
-import java.io.*;
 import java.net.*;
-import java.util.Vector;
+import java.io.*;
 
-import fr.jeu.Sauvegarde;
-import fr.personnage.*;
+import fr.personnage.Combattant;
 
-//Composante connexe + composante connexe forte
-public class Client {
+public class Client extends Socket {
 
-	private static Socket	socket;
+	// flux
+	private ObjectInputStream	in;
+	private ObjectOutputStream	out;
 
-	public static void main(String[] args) throws IOException,
-			InterruptedException, ClassNotFoundException {
-		socket = null;
-		ObjectOutputStream out;
-		try {
-			socket = new Socket(InetAddress.getLocalHost(), 2501);
-			//out = new ObjectOutputStream(socket.getOutputStream());
-			/*Serveur.envoieCombattant(out);
-			new Observation(socket);*/		    ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+	public Client() throws IOException, ClassNotFoundException {
+		super("localhost", 2501);
+		System.out.println("connexion établie");
+		this.startClient();
+	}
 
-		    ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-
-		    // Création de l'input stream
-		    // Création de l'output stream
-		    Vector vecRead = (Vector)ois.readObject();
-		    System.out.println(vecRead);
-		} catch (UnknownHostException e) {
-			System.err.println("Impossible de se connecter à l'adresse " + socket.getInetAddress());
-		} catch (IOException e) {
-			System.err.println("Aucun serveur à l'écoute du port " + socket.getPort());
+	/* lance le client */
+	private void startClient() throws IOException, ClassNotFoundException {
+		System.out.println("ouverture des flux en cours");
+		this.out = new ObjectOutputStream(super.getOutputStream());
+		this.in = new ObjectInputStream(super.getInputStream());
+		System.out.println("ouverture des flux effectuée" + "\n" + "le client est prêt à recevoir les messages du serveur");
+		while (true) {
+			System.out.println("serveur dit : " + this.recevoir());
 		}
-		return;
-	}
-}
-
-class Observation implements Runnable {
-
-	private Socket	socket;
-
-	Observation(Socket s) {
-		this.socket = s;
-		Thread t = new Thread(this);
-		t.start();
 	}
 
-	@Override
-	public void run() {
-		ObjectInputStream in;
-		System.out.println("aiie");
+	/* reçoit les données venant du serveur */
+	private Combattant recevoir() throws IOException, ClassNotFoundException {
+		return (Combattant)this.in.readObject();
+	}
+
+	/* lancement de l'application */
+	public static void main(String[] args) {
 		try {
-			System.out.println("aiie");
-			in = new ObjectInputStream(socket.getInputStream());
-			Combattant objetRecu;
-			System.out.println("aaa");
-			while (true) {
-				System.out.println("aha hah");
-				objetRecu = (Combattant) in.readObject();
-				System.out.println(objetRecu);
-				System.out.println("ahah");
-				System.out.println("ahahah");
-				Thread.sleep(2500);
-			}
-		} catch (IOException e) {
-			System.err.println(1);
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			System.err.println(2);
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			System.err.println(3);
-			e.printStackTrace();
+			new Client();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} catch (ClassNotFoundException cnfe) {
+			cnfe.printStackTrace();
 		}
 	}
 }

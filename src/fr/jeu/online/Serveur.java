@@ -2,69 +2,64 @@ package fr.jeu.online;
 
 import java.io.*;
 import java.net.*;
-import java.util.Vector;
+import java.util.*;
 
 import fr.personnage.Athlete;
-import fr.personnage.Combattant;
 
-public class Serveur {
-
-	private boolean	enVie	= true;
-
-	public static void main(String[] args) throws IOException,
-			InterruptedException {
-		ServerSocket socketServeur = new ServerSocket(2501);
-		Socket socket = new Socket(InetAddress.getLocalHost(), 2501);
-		System.out.println("Le serveur est à l'écoute du port " + socketServeur.getLocalPort());
-		/*ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-		envoieCombattant(oos);
-		ObjectInputStream ois = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));*/
-		Thread t = new Thread(new AccepterJoueurs(socketServeur));
-		t.start();
-		ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-		// Création de l'input stream
-		oos.writeObject(new Vector<Object>(12));
-
-		ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+public class Serveur extends ServerSocket {
+ 
+	// liste des clients
+	private HashMap<Socket, Flux> clients ;
+ 
+	public Serveur() throws IOException {
+ 
+		super(2501) ;
+ 		System.out.println("serveur démarré") ;
+		this.startServeur() ;
 	}
-
-	synchronized static void envoieCombattant(ObjectOutputStream out) {
-		try {
-			Combattant combat = new Athlete();
-			out.writeObject(combat);
-			out.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
+ 
+	private void startServeur() throws IOException {
+ 
+		// instance de la des clients
+		this.clients=new HashMap<Socket, Flux>() ;
+ 
+		System.out.println("liste des clients créée" +"\n" +"attente de connexion d'un client") ;
+ 		Socket dernierClient=this.accepterConnexion() ;
+		System.out.println("client connecté" +"\n" +"le serveur est prêt à envoyer des messages au client") ;
+ 
+		// debug - envoi constant de messages au client
+		Scanner sc=new Scanner(System.in) ;
+		while (true) {
+			
+ 			this.envoyer(dernierClient, new Athlete()) ;
 		}
 	}
-
-	public boolean isEnVie() {
-		return enVie;
+ 
+	/* écoute des connexions entrantes */
+	private Socket accepterConnexion() throws IOException {
+ 
+		Socket client=super.accept() ;
+ 		Flux f=new Flux(client) ;
+ 		this.clients.put(client, f) ;
+		return client ;
 	}
-
-	public void setEnVie(boolean enVie) {
-		this.enVie = enVie;
+ 
+	private void envoyer(Socket client, Object o) throws IOException {
+		ObjectOutputStream out=this.clients.get(client).getOutputStream() ;
+		out.writeObject(o) ;
+		out.flush() ;
+		out=null ;
 	}
-}
-
-class AccepterJoueurs implements Runnable {
-
-	private ServerSocket	socketserver;
-	private Socket			socket;
-
-	public AccepterJoueurs(ServerSocket s) {
-		this.socketserver = s;
-	}
-
-	public void run() {
+ 
+	/* lancement de l'application */
+	public static void main(String[] args) {
+ 
 		try {
-			while (true) {
-				System.out.println("En attente de joueur...");
-				socket = socketserver.accept();
-				System.out.println("Serveur a accepte connexion: " + socket);// Un client se connecte on l'accepte
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+ 
+			new Serveur() ;
+ 
+		} catch (IOException ioe) {
+			ioe.printStackTrace() ;
 		}
 	}
 }

@@ -19,7 +19,7 @@ public class Sauvegarde {
 			File fichier = new File("Sauvegardes/Duel");
 			if (!fichier.exists())
 				fichier.mkdir();
-			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Combattant/" + c.getNom() + ".save"))));
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Combattant/" + c.getNom()))));
 			oos.writeObject(c);
 			oos.close();
 		} catch (IOException ioe) {
@@ -41,7 +41,7 @@ public class Sauvegarde {
 			File fichier = new File("Sauvegardes/Duel");
 			if (!fichier.exists())
 				fichier.mkdir();
-			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Duel/" + d.getCombattant()[0].getNom() + "_vs_" + d.getCombattant()[1].getNom() + ".save"))));
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Duel/" + d.getCombattant()[0].getNom() + "_vs_" + d.getCombattant()[1].getNom()))));
 			oos.writeObject(d);
 			oos.close();
 		} catch (IOException ioe) {
@@ -123,7 +123,7 @@ public class Sauvegarde {
 		Combattant c = new Athlete(), a = null;
 		c.initCapacite();
 		sauvegarderCombattant(c);
-		a = chargerCombattant("Athlete_inconnu.save");
+		a = chargerCombattant("Athlete_inconnu");
 		System.out.println(a);
 		return;
 	}
