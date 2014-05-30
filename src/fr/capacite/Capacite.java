@@ -33,7 +33,7 @@ public abstract class Capacite implements Action, Serializable {
 
 	/**
 	 * @param reussite
-	 * @return renvoie si une action a réussie
+	 * @return renvoie si une action a rï¿½ussie
 	 */
 	public static boolean actionReussie(final int reussite) {
 		return (Math.random() * 100) <= reussite;
@@ -44,7 +44,7 @@ public abstract class Capacite implements Action, Serializable {
 	}
 
 	public static int calculReussite(final int cara_Perso, final int cara_Capa) {
-		return (cara_Perso * cara_Capa) / 10_000;
+		return (cara_Perso * cara_Capa) / 10000;
 	}
 
 	public static Capacite nouvelleCapacite(Capacite c) {

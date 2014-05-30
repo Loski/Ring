@@ -2,6 +2,8 @@ package fr.jeu;
 
 import java.io.*;
 
+import fr.capacite.Bouclier;
+import fr.capacite.Capacite;
 import fr.personnage.*;
 
 public class Sauvegarde {
@@ -46,6 +48,20 @@ public class Sauvegarde {
 			oos.close();
 		} catch (IOException ioe) {
 			System.err.println("Probleme lors de la Sauvegarde du Duel" + ioe.toString());
+		}
+	}
+	public static void sauvegarderCapacite(Capacite c, String chemin) {
+		ObjectOutputStream oos;
+
+		try {
+			File fichier = new File("Sauvegardes/Capacite/"+chemin);
+			if (!fichier.exists())
+				fichier.mkdir();
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Capacite/" + chemin +"/"+ c.getNom()))));
+			oos.writeObject(c);
+			oos.close();
+		} catch (IOException ioe) {
+			System.err.println("Probleme lors de la Sauvegarde de la capacite" + ioe.toString());
 		}
 	}
 
@@ -120,11 +136,13 @@ public class Sauvegarde {
 	}
 
 	public static void main(String[] arf) {
-		Combattant c = new Athlete(), a = null;
+		/*Combattant c = new Athlete(), a = null;
 		c.initCapacite();
 		sauvegarderCombattant(c);
 		a = chargerCombattant("Athlete_inconnu");
-		System.out.println(a);
+		System.out.println(a);*/
+		Capacite a = new Bouclier();
+		
 		return;
 	}
 }

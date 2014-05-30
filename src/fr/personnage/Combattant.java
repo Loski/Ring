@@ -8,6 +8,7 @@ import fr.jeu.Menu;
 
 public class Combattant implements Serializable {
 
+	public static final int			GUERRIER	= 0, MAGE = 1, ATHLETE = 2;
 	protected String				nom;
 	protected int					force;
 	protected int					dexterite;
@@ -17,8 +18,10 @@ public class Combattant implements Serializable {
 	protected int					experience;
 	protected int					protectionMagique;
 	protected int					protectionPhysique;
+	protected int					type;
 	/**
-	 * Un combattant possède un tableau de Capacité
+	 * Un combattant possï¿½de un tableau de Capacitï¿½
+	 * 
 	 * @see fr.capacite.Capacite
 	 */
 	protected ArrayList<Capacite>	capacite;
@@ -34,10 +37,9 @@ public class Combattant implements Serializable {
 	}
 
 	public Combattant(String nom, int force, int dexterite, int intelligence,
-			int concentration, int vitalite, int experience,
+			int concentration, int vitalite, int experience, int type,
 			ArrayList<Capacite> capacite) {
 		this.nom = nom;
-		this.experience = Combattant.MIN_XP;
 		this.experience = experience;
 		this.force = force;
 		this.dexterite = dexterite;
@@ -45,25 +47,9 @@ public class Combattant implements Serializable {
 		this.concentration = concentration;
 		this.vitalite = vitalite;
 		this.capacite = capacite;
-		initCapacite();
+		this.type = type;
 	}
 
-	public Combattant(String nom, int force, int dexterite, int intelligence,
-			int concentration, int vitalite, int experience) {
-		this.nom = nom;
-		if (experience > 20 || experience < 1)
-			this.experience = 1;
-		else
-			this.experience = experience;
-		if ((force + dexterite + intelligence + concentration) <= 100 + experience * 3) {
-			this.force = force;
-			this.dexterite = dexterite;
-			this.intelligence = intelligence;
-			this.concentration = concentration;
-			this.vitalite = vitalite;
-		}
-		this.capacite = new ArrayList<Capacite>();
-	}
 
 	public Combattant(Combattant combattant) {
 		this.nom = new String(combattant.nom);
@@ -74,13 +60,14 @@ public class Combattant implements Serializable {
 		this.vitalite = combattant.vitalite;
 		this.experience = combattant.experience;
 		this.capacite = new ArrayList<Capacite>(combattant.capacite);
+		this.type = combattant.type;
 	}
 
 	public String toString() {
 		String s = "-";
 		for (int i = 0; i < 50; i++)
 			s += "-";
-		s += "\nnom = " + this.nom + "\nforce = " + force + "\ndexterite = " + dexterite + "\nintelligence = " + intelligence + "\nconcentration = " + concentration + "\nvitalite = " + vitalite + "\nprotection magique = " + protectionMagique + "\nprotectionPhysique = " + protectionPhysique + "\nCapacité : " + capaciteString() + "\nlevel  = " + experience;
+		s += "\nnom = " + this.nom + "\nforce = " + force + "\ndexterite = " + dexterite + "\nintelligence = " + intelligence + "\nconcentration = " + concentration + "\nvitalite = " + vitalite + "\nprotection magique = " + protectionMagique + "\nprotectionPhysique = " + protectionPhysique + "\nCapacitï¿½ : " + capaciteString() + "\nlevel  = " + experience;
 		return s;
 	}
 
@@ -108,7 +95,7 @@ public class Combattant implements Serializable {
 	 * Permet de soigner le combattant courrant
 	 * 
 	 * @param i
-	 *            indice de la capacité
+	 *        indice de la capacitï¿½
 	 */
 	public String soin(int i) {
 		if (this.capacite.get(i).calculReussite(this)) {
@@ -123,7 +110,7 @@ public class Combattant implements Serializable {
 	 * Permet d'enclencher une parade pour le combattant courrant
 	 * 
 	 * @param i
-	 *            indice de la capacité
+	 *        indice de la capacitï¿½
 	 * @return message d'action
 	 */
 	public String parade(int i) {
@@ -131,7 +118,7 @@ public class Combattant implements Serializable {
 			switch (this.capacite.get(i).getDommage()) {
 				case Capacite.MAGIQUE:
 					this.protectionMagique += this.capacite.get(i).calculImpact(this, Capacite.PARADE);
-					// Si il lance plusieurs parade magiques dans le même tour
+					// Si il lance plusieurs parade magiques dans le mï¿½me tour
 					break;
 				case Capacite.PHYSIQUE:
 					this.protectionPhysique += this.capacite.get(i).calculImpact(this, Capacite.PARADE);
@@ -147,9 +134,9 @@ public class Combattant implements Serializable {
 	 * Permet d'enclencher une attaque sur un combattant cible
 	 * 
 	 * @param i
-	 *            indice de la capacité
+	 *        indice de la capacitï¿½
 	 * @param cible
-	 *            Cible de l'attaque
+	 *        Cible de l'attaque
 	 * @return message d'action
 	 */
 	public String attaque(int i, Combattant cible) {
@@ -157,12 +144,12 @@ public class Combattant implements Serializable {
 			int impact = this.capacite.get(i).calculImpact(this, Capacite.ATTAQUE);
 			switch (this.capacite.get(i).getDommage()) {
 				case Capacite.PHYSIQUE:
-						impact -= cible.protectionPhysique;
-						impact -= cible.protectionMagique/3;
+					impact -= cible.protectionPhysique;
+					impact -= cible.protectionMagique / 3;
 					break;
 				case Capacite.MAGIQUE:
 					impact -= cible.protectionMagique;
-					impact -= cible.protectionPhysique/3; // La parade de l'épée? /3 aussi?
+					impact -= cible.protectionPhysique / 3; // La parade de l'ï¿½pï¿½e? /3 aussi?
 					break;
 			}
 			if (impact > 0)
@@ -186,11 +173,10 @@ public class Combattant implements Serializable {
 	}
 
 	/**
-	 * Soigne le personnage selon l'efficacité de la potion avec pour limite la santé maximale du
-	 * combattant
+	 * Soigne le personnage selon l'efficacitï¿½ de la potion avec pour limite la santï¿½ maximale du combattant
 	 * 
 	 * @param potion
-	 *            Efficacité du soin
+	 *        Efficacitï¿½ du soin
 	 */
 	public void addVita(int potion) {
 		int vitaMax = 200 - (this.force + this.concentration + this.intelligence + this.dexterite) + this.experience * 3;
@@ -201,11 +187,11 @@ public class Combattant implements Serializable {
 	}
 
 	/**
-	 * Baisse la vitalité du combattant cible selon la valeur de dégât. Si elle est inférieur ou
-	 * égal à 0, le boolean enVie du combattant cible est mis à false
+	 * Baisse la vitalitï¿½ du combattant cible selon la valeur de dï¿½gï¿½t. Si elle est infï¿½rieur ou ï¿½gal ï¿½ 0, le boolean enVie du combattant
+	 * cible est mis ï¿½ false
 	 * 
 	 * @param degat
-	 *            intensité des dégâts
+	 *        intensitï¿½ des dï¿½gï¿½ts
 	 */
 	public void lowVita(int degat) {
 		if (this.vitalite - degat <= 0)
@@ -220,7 +206,7 @@ public class Combattant implements Serializable {
 		do {
 			System.out.println("Quelle est votre nom ?");
 			this.nom = sc.next();
-			System.out.println("Dextérité?");
+			System.out.println("Dextï¿½ritï¿½?");
 			this.dexterite = Menu.choix();
 			System.out.println("Force?");
 			this.force = Menu.choix();
@@ -234,7 +220,7 @@ public class Combattant implements Serializable {
 	public void choixNouvelleCapacite(Combattant perdant) {
 		this.capaciteDisponible();
 		int choix, choixCapa;
-		System.out.println("Voulez vous une nouvelle capacité?");
+		System.out.println("Voulez vous une nouvelle capacitï¿½?");
 		if (Menu.choix() == 1) {
 			do {
 				System.out.println("0 pour retour");
@@ -245,7 +231,7 @@ public class Combattant implements Serializable {
 				return;
 			if (this.capacite.size() == Capacite.MAX_CAPACITE) {
 				do {
-					System.out.println("Capacité à remplacer");
+					System.out.println("Capacitï¿½ ï¿½ remplacer");
 					choix = Menu.choix() - 1;
 				} while (choix <= -1 && choix > this.capacite.size() + 1);
 				this.capacite.set(choix, Capacite.nouvelleCapacite(perdant.capacite.get(choixCapa)));
@@ -254,21 +240,23 @@ public class Combattant implements Serializable {
 				this.capacite.add(Capacite.nouvelleCapacite(perdant.capacite.get(choixCapa)));
 		}
 	}
- 
+
 	public static void main(String[] argc) {
 		Combattant[] combat = new Combattant[2];
 		combat[0] = new Athlete();
-		combat[1] = new Magicien();
+		Athlete a = new Athlete();
+		a = new Athlete(combat[0]);
 		combat[0].init();
 		combat[0].initCapacite();
-		System.out.println(combat[0]);
-		//combat[0].choixNouvelleCapacite(combat[1]);
+		combat[1] = new Athlete(combat[0]); 
+		System.out.println(combat[1]);
+		// combat[0].choixNouvelleCapacite(combat[1]);
 		System.out.println(combat[0]);
 		return;
 	}
 
 	/**
-	 * Initialise le début du combat pour le combattant courant
+	 * Initialise le dï¿½but du combat pour le combattant courant
 	 */
 	public void preparationCombattant() { // futur changement de nom
 		this.capitule = false;
@@ -277,20 +265,20 @@ public class Combattant implements Serializable {
 	}
 
 	/**
-	 * Met à 0 les protections du joueurs courants.
+	 * Met ï¿½ 0 les protections du joueurs courants.
 	 */
 	public void finProtection() {
 		this.protectionMagique = this.protectionPhysique = 0;
 	}
-	
-	public void gagner(Combattant perdant){
+
+	public void gagner(Combattant perdant) {
 		this.addXP();
 		this.choixNouvelleCapacite(perdant);
 	}
-	public void perdre(){
+
+	public void perdre() {
 		this.lowXP();
 	}
-	
 
 	public String getNom() {
 		return nom;
@@ -370,5 +358,9 @@ public class Combattant implements Serializable {
 
 	public void setCapitule(boolean capitule) {
 		this.capitule = capitule;
+	}
+
+	public int getType() {
+		return type;
 	}
 }
