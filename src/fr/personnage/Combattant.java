@@ -244,8 +244,6 @@ public class Combattant implements Serializable {
 	public static void main(String[] argc) {
 		Combattant[] combat = new Combattant[2];
 		combat[0] = new Athlete();
-		Athlete a = new Athlete();
-		a = new Athlete(combat[0]);
 		combat[0].init();
 		combat[0].initCapacite();
 		combat[1] = new Athlete(combat[0]); 

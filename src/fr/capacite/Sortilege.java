@@ -1,5 +1,7 @@
 package fr.capacite;
 
+import fr.jeu.Menu;
+import fr.jeu.Sauvegarde;
 import fr.personnage.Combattant;
 
 public class Sortilege extends Capacite {
@@ -13,13 +15,6 @@ public class Sortilege extends Capacite {
 				" C'est un sort d'attaque");
 		this.efficacite = this.facilite = 50;
 	}
-
-	public Sortilege(int type) { // Dans le chargement d'un sortilège -> tester par rapport au type
-		super("Sortilege de feu", type, Capacite.MAGIQUE, "");
-		this.efficacite = this.facilite = 50;
-		initDescription();
-	}
-
 	public Sortilege(String nom, int type, int efficacite, int facilite,
 			String description) {
 		super(nom, type, Capacite.MAGIQUE, description);
@@ -34,6 +29,12 @@ public class Sortilege extends Capacite {
 		Sortilege s = (Sortilege) c;
 		this.efficacite = s.efficacite;
 		this.facilite = s.facilite;
+	}
+	
+	public static void creerSortilege(){
+		Capacite a = new Sortilege();
+		a.init();
+		new Sauvegarde<Sortilege>().sauvegarderCapacite((Sortilege) a);
 	}
 
 	/**
@@ -62,5 +63,16 @@ public class Sortilege extends Capacite {
 	@Override
 	public String toString() {
 		return "Sortilege " + nom + " [efficacite=" + efficacite + ", facilite=" + facilite + ", type=" + description + "]";
+	}
+	public void init() {
+		super.init();
+		do {
+			System.out.println("Choississez une valeur pour la valeur de la facilité :");
+			this.facilite = Menu.choix();
+			System.out.println("Choississez une valeur pour la valeur de l'éfficacité :");
+			this.efficacite = Menu.choix();
+			System.out.println("Choissisez la fonctionnnalité de l'attaque :\n1.\t Attaque\n2.\tParade\n3.\tSoin");
+			this.type = Menu.choix();
+		} while (!(this.efficacite + this.facilite  == 100) || this.facilite < 20 || this.efficacite < 20 && (this.type < 0 || this.type > 3));
 	}
 }

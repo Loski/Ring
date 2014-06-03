@@ -1,5 +1,7 @@
 package fr.capacite;
 
+import fr.jeu.Menu;
+import fr.jeu.Sauvegarde;
 import fr.personnage.Combattant;
 
 public class Remede extends Capacite {
@@ -24,18 +26,17 @@ public class Remede extends Capacite {
 		this.description = "Heal yourself";
 	}
 	
-	public Remede(Remede r){
-		super(r.nom, r.type, r.dommage, r.description);
-		this.facilite = r.facilite;
-		this.efficacite =  r.efficacite;
-	}
 	public Remede(Capacite c){
 		super(c);
 		Remede r = (Remede) c;
 		this.facilite = r.facilite;
 		this.efficacite =  r.efficacite;
 	}
-
+	public static void creerRemede(){
+		Capacite r = new Remede();
+		r.init();
+		new Sauvegarde<Remede>().sauvegarderCapacite((Remede) r);
+	}
 
 
 	public boolean calculReussite(Combattant combattant) {
@@ -45,10 +46,19 @@ public class Remede extends Capacite {
 	public int calculImpact(Combattant combattant, int type) {
 		return calculImpact(combattant.getDexterite(), this.efficacite);
 	}
-
+	
 	@Override
 	public String toString() {
 		return "Remede " +nom+"[facilite=" + facilite + ", efficacite=" + efficacite
 				+ "]";
+	}
+	public void init() {
+		super.init();
+		do {
+			System.out.println("Choississez une valeur pour la valeur de la facilité :");
+			this.facilite = Menu.choix();
+			System.out.println("Choississez une valeur pour la valeur de l'éfficacité :");
+			this.efficacite = Menu.choix();
+		} while (!(this.efficacite + this.facilite  == 100) || this.facilite < 20 || this.efficacite < 20);
 	}
 }

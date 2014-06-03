@@ -2,6 +2,8 @@ package fr.capacite;
 
 import java.io.Serializable;
 
+import fr.jeu.Menu;
+
 @SuppressWarnings("serial")
 public abstract class Capacite implements Action, Serializable {
 
@@ -21,7 +23,7 @@ public abstract class Capacite implements Action, Serializable {
 		this.nom = new String(c.nom);
 		this.type = c.type;
 		this.dommage = c.dommage;
-		this.description = c.description;
+		this.description = new String(c.description);
 	}
 
 	public Capacite(String nom, int type, int dommage, String description) {
@@ -57,7 +59,10 @@ public abstract class Capacite implements Action, Serializable {
 		else
 			return new Remede(c);
 	}
-
+	public void init(){
+		System.out.println("Choississez un nom :");
+		this.nom = Menu.choixString();
+	}
 	public String getDescription() {
 		return description;
 	}

@@ -23,8 +23,6 @@ public class Magicien extends Combattant {
 	}
 	public void initCapacite(){
 		super.initCapacite();
-		this.capacite.add(new Sortilege(Capacite.ATTAQUE));
-		this.capacite.add(new Sortilege(Capacite.SOIN));	
 	}
 	
 }
