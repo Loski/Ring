@@ -2,70 +2,74 @@ package fr.jeu;
 
 import java.io.*;
 
-import fr.capacite.Bouclier;
-import fr.capacite.Capacite;
-import fr.capacite.Epee;
-import fr.capacite.Remede;
-import fr.capacite.Sortilege;
+import fr.capacite.*;
 import fr.personnage.*;
 
-public class Sauvegarde <T extends Capacite>{
+public class Sauvegarde<T extends Capacite> {
 
 	/**
-	 * Sauvegarde une instance de Combattant dans le dossier Sauvegardes/Combattant/nomDuCombattant Remplace le fichier, si un fichier ayant le même
+	 * Sauvegarde une instance de Combattant dans le dossier Sauvegardes/Combattant/nomDuCombattant Remplace le fichier, si un fichier ayant le mï¿½me
 	 * nom existe
 	 * 
 	 * @param c
-	 *        Le combattant à sauvegarder
+	 *        Le combattant ï¿½ sauvegarder
 	 */
 	public static void sauvegarderCombattant(Combattant c) {
-		ObjectOutputStream oos;
+		ObjectOutputStream oos = null;
 		try {
 			File fichier = new File("Sauvegardes/Combattant/");
 			if (!fichier.exists())
 				fichier.mkdirs();
 			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Combattant/" + c.getNom()))));
 			oos.writeObject(c);
-			oos.close();
 		} catch (IOException ioe) {
 			System.err.println("Probleme lors de la Sauvegarde du Combattant " + c.getNom() + ioe.getMessage());
+		} finally {
+			try {
+				oos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
 	/**
 	 * Sauvegarde une instance d'un duel dans le dossier Sauvegardes/Duel/nomduCombattant1_vs_nomduCombattant2. Remplace le fichier, si un fichier
-	 * ayant le même nom existe.
+	 * ayant le mï¿½me nom existe.
 	 * 
 	 * @param d
-	 *        Le duel à sauvegarder
+	 *        Le duel ï¿½ sauvegarder
 	 */
 	public static void sauvegarderDuel(Duel d) {
-		ObjectOutputStream oos;
+		ObjectOutputStream oos = null;
 		try {
 			File fichier = new File("Sauvegardes/Duel");
 			if (!fichier.exists())
 				fichier.mkdirs();
 			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Duel/" + d.getCombattant()[0].getNom() + "_vs_" + d.getCombattant()[1].getNom()))));
 			oos.writeObject(d);
-			oos.close();
 		} catch (IOException ioe) {
 			System.err.println("Probleme lors de la Sauvegarde du Duel" + ioe.toString());
+		} finally {
+			try {
+				oos.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
-
-
 	/**
-	 * Affiche tous les fichiers contenant une sauvegarde puis demande au joueur de selectionner une sauvegarde particulière
+	 * Affiche tous les fichiers contenant une sauvegarde puis demande au joueur de selectionner une sauvegarde particuliï¿½re
 	 * 
 	 * @param chemin
-	 *        Chemin du répertoire où sont stockés les sauvegardes
-	 * @return Le chemin de la sauvegarde selectionnée
+	 *        Chemin du rï¿½pertoire oï¿½ sont stockï¿½s les sauvegardes
+	 * @return Le chemin de la sauvegarde selectionnï¿½e
 	 */
 	public static String selectSauvegarde(String chemin) {
 		File fichier = new File(chemin);
 		String[] s = fichier.list();
-		if(s.length==0){
+		if (s.length == 0) {
 			System.out.println("Aucune sauvegarde dans le dossier " + chemin);
 			return null;
 		}
@@ -80,81 +84,125 @@ public class Sauvegarde <T extends Capacite>{
 	}
 
 	/**
-	 * Demande au joueur quelle sauvegarde il doit charger, puis récupère les informations dans un fichier texte de ce combattant
+	 * Demande au joueur quelle sauvegarde il doit charger, puis rï¿½cupï¿½re les informations dans un fichier texte de ce combattant
 	 * 
-	 * @return Une instance d'un combattant chargé à partir d'un fichier texte.
+	 * @return Une instance d'un combattant chargï¿½ ï¿½ partir d'un fichier texte.
 	 */
 	public static Combattant chargerCombattant() {
 		String nomSauvegarde = selectSauvegarde("Sauvegardes/Combattant/");
-		ObjectInputStream ois;
+		ObjectInputStream ois = null;
 		Combattant c = null;
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Combattant/" + nomSauvegarde))));
 			c = new Combattant((Combattant) ois.readObject());
-			ois.close();
 		} catch (Exception e) {
 			System.err.print("Probleme lors du chargement du Combattant" + nomSauvegarde);
+		} finally {
+			try {
+				ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return c;
 	}
 
 	public static Combattant chargerCombattant(String chemin) {
-		ObjectInputStream ois;
+		ObjectInputStream ois = null;
 		Combattant c = null;
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Combattant/" + chemin))));
 			c = new Combattant((Combattant) ois.readObject());
-			ois.close();
 		} catch (Exception e) {
 			System.err.print("Probleme lors du chargement du Combattant" + chemin);
+		} finally {
+			try {
+				ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return c;
 	}
 
 	/**
-	 * Demande à un joueur quelle sauvegarde il doit charger, puis récupère les informations dans un fichier texte
+	 * Demande ï¿½ un joueur quelle sauvegarde il doit charger, puis rï¿½cupï¿½re les informations dans un fichier texte
 	 * 
-	 * @return Une instance d'un duel chargé à partir d'un fichier texte.
+	 * @return Une instance d'un duel chargï¿½ ï¿½ partir d'un fichier texte.
 	 */
 	public static Duel chargerDuel() {
 		String nomSauvegarde = selectSauvegarde("Sauvegardes/Duel/");
-		ObjectInputStream ois;
+		ObjectInputStream ois = null;
 		Duel d = null;
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Duel/" + nomSauvegarde))));
 			d = new Duel((Duel) ois.readObject());
-			ois.close();
 		} catch (Exception e) {
-			System.out.print("Probleme lors du chargement du Duel");
+			System.err.print("Probleme lors du chargement du Duel " + e.getMessage());
+		} finally {
+			try {
+				ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		return d;
 	}
+
+	public static Duel chargerDuel(String nomSauvegarde) {
+		ObjectInputStream ois = null;
+		Duel d = null;
+		try {
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Duel/" + nomSauvegarde))));
+			d = new Duel((Duel) ois.readObject());
+		} catch (Exception e) {
+			System.err.print("Probleme lors du chargement du Duel " + e.getMessage());
+		} finally {
+			try {
+				ois.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return d;
+	}
+
 	/**
-	 * Sauvegarde une capacité dans le dossier Sauvegardes/Capacite/nomDeLaClasse/nomDeLaCapacité
+	 * Sauvegarde une capacitï¿½ dans le dossier Sauvegardes/Capacite/nomDeLaClasse/nomDeLaCapacitï¿½
+	 * 
 	 * @param capacite
-	 * Instance d'une classe hérité de capacité, qui sera sauvegardée
+	 *        Instance d'une classe hï¿½ritï¿½ de capacitï¿½, qui sera sauvegardï¿½e
 	 */
 	public void sauvegarderCapacite(T capacite) {
 		ObjectOutputStream oos;
 		try {
 			File fichier = new File("Sauvegardes/Capacite/" + capacite.getClass().getSimpleName());
 			if (!fichier.exists())
-				fichier.mkdirs(); 
-			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Capacite/" + capacite.getClass().getSimpleName() +"/"+ capacite.getNom()))));
+				fichier.mkdirs();
+			oos = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStream(new File("Sauvegardes/Capacite/" + capacite.getClass().getSimpleName() + "/" + capacite.getNom()))));
 			oos.writeObject(capacite);
 			oos.close();
 		} catch (IOException ioe) {
-			System.err.println("Probleme lors de la sauvegarde d'une capacité" + capacite.getNom() + ioe.getMessage());
+			System.err.println("Probleme lors de la sauvegarde d'une capacitï¿½" + capacite.getNom() + ioe.getMessage());
 		}
 	}
-	
+
+	public static void supprimerDuel(Combattant[] combattant) {
+		File fichier = new File("Sauvegardes/Duel/" + combattant[0].getNom() + "_vs_" + combattant[1].getNom());
+		if (fichier.exists() && fichier.canWrite())
+			fichier.delete();
+		else
+			System.err.println("Le duel n'a pas pu ï¿½tre supprimï¿½");
+	}
 
 	public static Capacite chargerCapacite(String chemin, int capacite) {
 		ObjectInputStream ois;
-		String nomCapacite = Sauvegarde.selectSauvegarde("Sauvegardes/Capacite/"+chemin);
+		File fichier = new File("Sauvegardes/Capacite/" + chemin);
+		if (!fichier.exists())
+			fichier.mkdirs();
+		String nomCapacite = Sauvegarde.selectSauvegarde("Sauvegardes/Capacite/" + chemin);
 		try {
-			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Capacite/"+chemin+"/"+nomCapacite))));
-
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(new File("Sauvegardes/Capacite/" + chemin + "/" + nomCapacite))));
 			switch (capacite) {
 				case Capacite.EPEE:
 					return new Epee((Epee) ois.readObject());
@@ -166,7 +214,7 @@ public class Sauvegarde <T extends Capacite>{
 					return new Sortilege((Sortilege) ois.readObject());
 			}
 		} catch (IOException e) {
-			System.err.print("Probleme lors du chargement de la capacite " + e.getMessage());
+			System.err.print("Probleme lors du chargement de la capacitï¿½ " + e.getMessage());
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -174,13 +222,13 @@ public class Sauvegarde <T extends Capacite>{
 	}
 
 	public static void main(String[] arf) {
-		/*Capacite a = new Sortilege();
-		a.init();
-		new Sauvegarde<Sortilege>().sauvegarderCapacite((Sortilege) a);
-		Capacite b = Sauvegarde.chargerCapacite("Sortilege",Capacite.SORTILEGE);*/
-		/*Bouclier a = new Bouclier();
-		Capacite b = new Bouclier(a);
-		System.out.println(b);*/
+		/*
+		 * Capacite a = new Sortilege(); a.init(); new Sauvegarde<Sortilege>().sauvegarderCapacite((Sortilege) a); Capacite b =
+		 * Sauvegarde.chargerCapacite("Sortilege",Capacite.SORTILEGE);
+		 */
+		/*
+		 * Bouclier a = new Bouclier(); Capacite b = new Bouclier(a); System.out.println(b);
+		 */
 		return;
 	}
 }

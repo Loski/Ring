@@ -10,7 +10,7 @@ public class Remede extends Capacite {
 	private int efficacite;
 
 	public Remede() {
-		this.nom = new String("de génie");
+		this.nom = new String("Remède");
 		this.efficacite = this.facilite = 50;
 		this.type = Capacite.SOIN;
 		this.dommage = Capacite.MAGIQUE;

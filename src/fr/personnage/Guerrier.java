@@ -14,18 +14,13 @@ public class Guerrier extends Combattant {
 	}
 
 	public Guerrier(){
-		super();
-		this.type = Combattant.GUERRIER;
+		super("Magicien_inconnu", 5, 5, 46, 45, 103, Combattant.MIN_XP, Combattant.GUERRIER,null);
+		capaciteDefaut();
 	}
 	
 	public void init(){
 		do{
 			super.init();
 		}while(force < dexterite+10 && dexterite+10 < intelligence +10 && intelligence +10 < concentration);
-	}
-	public void initCapacite(){
-		super.initCapacite();
-		this.capacite.add(new Epee());
-		this.capacite.add(new Bouclier());
 	}
 }

@@ -34,19 +34,19 @@ public abstract class Capacite implements Action, Serializable {
 	}
 
 	/**
-	 * @param reussite
+	 * @param f
 	 * @return renvoie si une action a r�ussie
 	 */
-	public static boolean actionReussie(final int reussite) {
-		return (Math.random() * 100) <= reussite;
+	public static boolean actionReussie(final float reussite) {
+		return (Math.random()) <= reussite;
 	}
-
+ 
 	public static int calculImpact(final int cara_Perso, final int cara_Capa) {
 		return (cara_Capa * cara_Perso) / 100;
 	}
 
-	public static int calculReussite(final int cara_Perso, final int cara_Capa) {
-		return (cara_Perso * cara_Capa) / 10000;
+	public static float calculReussite(final int cara_Perso, final int cara_Capa) {
+		return ((float)(cara_Perso * cara_Capa) / 3000);
 	}
 
 	public static Capacite nouvelleCapacite(Capacite c) {

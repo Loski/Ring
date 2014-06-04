@@ -36,25 +36,27 @@ public class Duel implements Serializable {
 	}
 
 	public boolean finCombat() {
-		return !this.combattant[0].isCapitule() && !this.combattant[1].isCapitule() && this.combattant[0].isEnVie() && this.combattant[1].isEnVie();
+		return this.combattant[0].isCapitule() || this.combattant[1].isCapitule() || !this.combattant[0].isEnVie() || !this.combattant[1].isEnVie();
 	}
 
 	/**
-	 * Gère le tour d'un joueur
+	 * Gï¿½re le tour d'un joueur
 	 * 
 	 * @param joueurActuel
-	 *        Joueur courant qui gère ses actions disponibles
+	 *        Joueur courant qui gï¿½re ses actions disponibles
 	 * @param cible
 	 *        joueur cible de l'action du joueur lors d'une attaque
 	 */
 	public void jouer(int joueurActuel, int cible) {
 		Scanner sc = new Scanner(System.in);
 		int choix, pointAction = 2;
-		combattant[joueurActuel].finProtection(); // On remet à 0 les protections du combattant courants à chaque début de tour
-		while (pointAction > 0 && finCombat()) {
+		combattant[joueurActuel].preparationTour(combattant[cible]); // On remet ï¿½ 0 les protections du combattant courants ï¿½ chaque dï¿½but de tour +//
+																		// dÃ©gat
+		System.out.println(combattant[cible].uhdCombattant());
+		while (pointAction > 0 && !finCombat()) {
 			do {
 				combattant[joueurActuel].capaciteDisponible();
-				System.out.print(this.combattant[0].getCapacite().size() + 1 + "\tAbandon");
+				System.out.println(this.combattant[0].getCapacite().size() + 1 + "\tAbandon");
 				choix = sc.nextInt();
 			} while (choix < 1 || choix > this.combattant[0].getCapacite().size() + 1);// +1 Abandon
 			action(joueurActuel, cible, choix - 1);
@@ -66,9 +68,9 @@ public class Duel implements Serializable {
 	 * @param joueurActuel
 	 *        Combattant courant
 	 * @param cible
-	 *        Combattant visé par une attaque
+	 *        Combattant visï¿½ par une attaque
 	 * @param choix
-	 *        choix de la capacité
+	 *        choix de la capacitï¿½
 	 */
 	public void action(int joueurActuel, int cible, int choix) {
 		if (choix == this.combattant[joueurActuel].getCapacite().size())
@@ -122,21 +124,22 @@ public class Duel implements Serializable {
 			System.out.println(this.affJoueur(this.joueur1));
 			this.jouer(joueur1, joueur2);
 			System.out.println(this.affJoueur(joueur2));
-			System.out.print(combattant[1]);
 			this.jouer(joueur2, joueur1);
-		} while (this.finCombat());
+		} while (!this.finCombat());
 	}
 
 	public static void main(String[] args) {
 		Duel duel = new Duel();
 		duel.combattant[0] = new Athlete();
 		duel.combattant[1] = new Magicien();
-		duel.combattant[0].initCapacite();
-		duel.combattant[1].initCapacite();
+		int gagnant, perdant;
 		Sauvegarde.sauvegarderDuel(duel);
 		duel.demarrageDuel();
 		duel.tour();
-		System.out.println("Le joueur " + duel.combattant[duel.gagnant()].getNom() + " a gagné.");
+		gagnant = duel.gagnant();
+		perdant = (gagnant == 1) ? 0 : 1;
+		System.out.println("Le joueur " + duel.combattant[gagnant].getNom() + " a gagnÃ©.");
+		duel.combattant[gagnant].choixNouvelleCapacite(duel.combattant[perdant]);
 		return;
 	}
 
@@ -145,17 +148,17 @@ public class Duel implements Serializable {
 			System.out.println(combattant[i]);
 		}
 	}
+
 	/**
-	 * 
 	 * @param i
 	 * @return
 	 */
 	public String affJoueur(int i) {
-		return combattant[i].getNom() + " à toi de joueur !";
+		return combattant[i].getNom() + " Ã  toi de jouer !";
 	}
 
 	/*
-	 * Retourne l'indice du combattant qui a gagné
+	 * Retourne l'indice du combattant qui a gagnÃ©
 	 */
 	public int gagnant() {
 		if (combattant[0].isEnVie() && !combattant[0].isCapitule())

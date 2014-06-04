@@ -8,7 +8,7 @@ public class Sortilege extends Capacite {
 	private int	efficacite;
 	private int	facilite;
 
-	// Il faut définir le type pour savoir si c'est un sortilège défensif, guérisseur ou offensif
+	// Il faut dï¿½finir le type pour savoir si c'est un sortilï¿½ge dï¿½fensif, guï¿½risseur ou offensif
 
 	public Sortilege() {
 		super("Sortilege de feu", Capacite.ATTAQUE, Capacite.MAGIQUE,
@@ -38,7 +38,7 @@ public class Sortilege extends Capacite {
 	}
 
 	/**
-	 * Initialise la description d'un sortilège en fonction de son type d'action
+	 * Initialise la description d'un sortilï¿½ge en fonction de son type d'action
 	 */
 	public void initDescription() {
 		if (this.type == Capacite.ATTAQUE)
@@ -67,11 +67,11 @@ public class Sortilege extends Capacite {
 	public void init() {
 		super.init();
 		do {
-			System.out.println("Choississez une valeur pour la valeur de la facilité :");
+			System.out.println("Choississez une valeur pour la valeur de la facilitï¿½ :");
 			this.facilite = Menu.choix();
-			System.out.println("Choississez une valeur pour la valeur de l'éfficacité :");
+			System.out.println("Choississez une valeur pour la valeur de l'ï¿½fficacitï¿½ :");
 			this.efficacite = Menu.choix();
-			System.out.println("Choissisez la fonctionnnalité de l'attaque :\n1.\t Attaque\n2.\tParade\n3.\tSoin");
+			System.out.println("Choissisez la fonctionnalitï¿½ du sortilï¿½ge :\n1.\tAttaque\n2.\tParade\n3.\tSoin");
 			this.type = Menu.choix();
 		} while (!(this.efficacite + this.facilite  == 100) || this.facilite < 20 || this.efficacite < 20 && (this.type < 0 || this.type > 3));
 	}

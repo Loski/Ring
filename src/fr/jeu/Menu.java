@@ -3,6 +3,7 @@ package fr.jeu;
 import java.awt.Color;
 import java.util.*;
 
+import fr.capacite.*;
 import fr.personnage.*;
 
 public class Menu {
@@ -42,6 +43,23 @@ public class Menu {
 			}
 		// scanner.close();
 		return choix;
+	}
+
+	public static Capacite choisirCapacite() {
+		System.out.println("Choissisez votre type de capacité\n1.\tRemède\n2.\tBouclier\n3.\tSortilège\n4.\tEpee");
+		int choix = Menu.choix();
+		switch (choix) {
+			case Capacite.REMEDE:
+				return Sauvegarde.chargerCapacite("Remede", Capacite.REMEDE);
+			case Capacite.BOUCLIER:
+				return Sauvegarde.chargerCapacite("Bouclier", Capacite.BOUCLIER);
+			case Capacite.SORTILEGE:
+				return Sauvegarde.chargerCapacite("Sortilege", Capacite.SORTILEGE);
+			case Capacite.EPEE:
+				return Sauvegarde.chargerCapacite("Epee", Capacite.EPEE);
+			default:
+				return null;
+		}
 	}
 
 	/**

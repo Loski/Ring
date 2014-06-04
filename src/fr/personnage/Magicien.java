@@ -19,10 +19,7 @@ public class Magicien extends Combattant {
 	}
 	
 	public Magicien(){
-		super("Magicien_inconnu", 5, 5, 46, 45, 200, 1, Combattant.MAGE,null);
+		super("Magicien_inconnu", 5, 5, 46, 45, 103, Combattant.MIN_XP, Combattant.MAGE,null);
+		capaciteDefaut();
 	}
-	public void initCapacite(){
-		super.initCapacite();
-	}
-	
 }
