@@ -1,4 +1,4 @@
-package fr.jeu.multiLocal;
+package fr.jeu;
 
 import java.io.File;
 import java.io.IOException;

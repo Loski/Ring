@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.Arrays;
 
-import fr.jeu.multiLocal.Serveur;
 import fr.personnage.Combattant;
 
 public class DuelLocal extends Duel {
@@ -19,27 +18,26 @@ public class DuelLocal extends Duel {
 		this.dossier = dossier;
 		this.combattant = new Combattant[2];
 		this.nomSauvegarde = nomSauvegarde;
+		Sauvegarde.creerDossier(dossier);
 		PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:*.comb");
-		try {
-			// if (matcher.matches(dossier.toPath())) {
-			if (!Serveur.dossierVide(dossier)) {
-				this.rejoindreDuel(dossier, combattant);
-				this.combattant[1] = combattant;
-				instance = 1;
-			}
-			else {
-				instance = 0;
-				System.out.println("En attente d'un joueur....");
-				new Sauvegarde<Combattant>().sauvegarder(combattant, dossier, combattant.getNom() + ".comb");
-				this.combattant[0] = combattant;
-				String saveOther = Serveur.nouveauFichier(dossier.toPath()); // On attends la création d'un combattant dans le dossier
+		// if (matcher.matches(dossier.toPath())) {
+		if (!Serveur.dossierVide(dossier)) { // Personne qui rejoinds le duel
+			this.rejoindreDuel(dossier, combattant);
+			this.combattant[1] = combattant;
+			instance = 1;
+		}
+		else { // personne qui créé le duel
+			instance = 0;
+			System.out.println("En attente d'un joueur....");
+			new Sauvegarde<Combattant>().sauvegarder(combattant, dossier, combattant.getNom() + ".comb");
+			this.combattant[0] = combattant;
+			String saveOther = Serveur.nouveauFichier(dossier.toPath()); // On attends la création d'un combattant dans le dossier
+			try {
 				Thread.sleep(1000);
-				this.combattant[1] = Sauvegarde.chargerCombattant(dossier, saveOther);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			this.combattant[1] = Sauvegarde.chargerCombattant(dossier, saveOther);
 		}
 	}
 
@@ -50,89 +48,93 @@ public class DuelLocal extends Duel {
 	}
 
 	@Override
+	/**
+	 * La première instance du duel est chargé de gérer le démarrage du duel, puis le sauvegarde
+	 * La seconde attends que le duel soit sauvegardé, puis charge les combattants, et les variables gérant l'initiative.
+	 */
 	public void demarrageDuel() {
-		if (instance == 0)
-			try {
-				super.demarrageDuel();
-				System.out.println("Je suis " + instance);
-				this.combattant[joueur1].setJePeuxJouer(true);;
-				this.combattant[joueur2].setJePeuxJouer(false);
-				System.out.println("j1 if" + joueur1);
-				new Sauvegarde<DuelLocal>().sauvegarder(this, dossier, nomSauvegarde);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		if (instance == 0) {
+			super.demarrageDuel();
+			new Sauvegarde<Duel>().sauvegarder(this, dossier, nomSauvegarde);
+		}
 		else {
 			try {
-				Serveur.surveillerDuel(dossier.toPath());
-				/*
-				 * Thread.sleep(2500); System.out.println("Je suis " + instance); System.out.println("j1 else "+joueur1);
-				 */
-				DuelLocal tmp = Sauvegarde.chargerDuelLocal(dossier, nomSauvegarde);
-				this.combattant = tmp.getCombattant();
-				this.joueur1 = tmp.joueur1;
-				this.joueur2 = tmp.joueur2;
-				
-				 System.out.println("j12 else" + joueur1);
-				 
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			this.combattant[joueur2].setJePeuxJouer(false);
+			Duel tmp = Sauvegarde.chargerDuel(dossier, nomSauvegarde);
+			this.combattant = tmp.getCombattant();
+			this.joueur1 = tmp.joueur1;
+			this.joueur2 = tmp.joueur2;
 		}
 		System.out.println(this.combattant[0]);
 		System.out.println(this.combattant[1]);
-		System.out.println("j2" + joueur2 + "j1 : " + joueur1);
+	}
+
+	public void tourOnline(int instance, int other) {
+		if (combattant[joueur1].isJePeuxJouer()) {
+			System.out.println(this.affJoueur(this.joueur1));
+			this.jouer(joueur1, joueur2);
+		}
+		else {
+			System.out.println(this.affJoueur(joueur2));
+			this.jouer(joueur2, joueur1);
+		}
+		this.combattant[other].setJePeuxJouer(true);
+		this.combattant[instance].setJePeuxJouer(false);
 	}
 
 	public void combat() {
 		demarrageDuel();
 		do {
-			tourJInitiative();
+			tour();
 		} while (!this.finCombat());
+		System.out.println("fin");
 		int gagnant = gagnant();
+		int perdant = (gagnant == 1) ? 0 : 1;
 		System.out.println("Le joueur " + combattant[gagnant].getNom() + " a gagné.");
-		gestionFinCombat(gagnant);
+		if (gagnant == instance)
+			gestionFinCombatGagnant(gagnant, perdant);
+		else if (perdant == instance)
+			gestionFinCombatPerdant(perdant, gagnant);
+		try {
+			Sauvegarde.supprimerDuel(new File(dossier.toPath() + "/" + nomSauvegarde));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
 	 * @param joueur
 	 *        true joueur qui à l'initiative false l'autre joueur
 	 */
-	public void tourJInitiative() {
+	public void tour() {
 		int otherJoueur = (instance == 1) ? 0 : 1;
-		System.out.print(otherJoueur + "   " + instance);
-		try {
-			System.out.print(Sauvegarde.chargerDuelLocal(dossier, nomSauvegarde).getCombattant()[0].isJePeuxJouer());
-			System.out.print(Sauvegarde.chargerDuelLocal(dossier, nomSauvegarde).getCombattant()[1].isJePeuxJouer());
-			System.out.println(this.getCombattant()[0].isJePeuxJouer());
-			System.out.println(this.getCombattant()[1].isJePeuxJouer() + "instance " + instance);
-			if ((combattant[0].isJePeuxJouer() && instance == 0) || (combattant[1].isJePeuxJouer() && instance == 1)) {
-				refreshCombattant(otherJoueur);
-				tour(dossier, nomSauvegarde);
-				combattant[otherJoueur].setJePeuxJouer(true);
-				combattant[instance].setJePeuxJouer(false);
-				new Sauvegarde<DuelLocal>().sauvegarder(this, dossier, nomSauvegarde);
+		if ((combattant[0].isJePeuxJouer() && instance == 0) || (combattant[1].isJePeuxJouer() && instance == 1)) {
+			refreshCombattant(otherJoueur);
+			tourOnline(instance, otherJoueur);
+			new Sauvegarde<Duel>().sauvegarder(this, dossier, nomSauvegarde);
+		}
+		else {
+			System.out.println("En attente de la fin du tour de l'adversaire...");
+			try {
+				Thread.sleep(2500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			else {
-				System.out.println("En attente de la fin du tour de l'adversaire...");
-				Serveur.surveillerDuel(dossier.toPath());
-				refreshCombattant(instance);
-				System.out.println(this.combattant[instance].isJePeuxJouer());
-				tourJInitiative();
-			}
-		} catch (IOException | ClassNotFoundException e) {
-			e.printStackTrace();
+			refreshCombattant(); //on rafréchit tous pour voir si l'autre personnage n'a pas abandonner
+			if (!finCombat())
+				tour();
 		}
 	}
 
 	public void refreshCombattant(int i) {
-		try {
-			this.combattant[i] = Sauvegarde.chargerDuelLocal(dossier, nomSauvegarde).getCombattant()[i];
-		} catch (ClassNotFoundException | IOException e) {
-			e.printStackTrace();
-		}
+		this.combattant[i] = Sauvegarde.chargerDuel(dossier, nomSauvegarde).getCombattant()[i];
+	}
+
+	public void refreshCombattant() {
+		this.combattant = Sauvegarde.chargerDuel(dossier, nomSauvegarde).getCombattant();
 	}
 
 	/**
@@ -142,27 +144,17 @@ public class DuelLocal extends Duel {
 	 * @param combattant
 	 */
 	public void rejoindreDuel(File dossier, Combattant combattant) {
-		try {
-			String[] s = dossier.list();
-			for (int i = 0; i < s.length; i++) {
-				if (s[i].endsWith(".comb")) {
-					this.combattant[0] = Sauvegarde.chargerCombattant(dossier, s[i]);
-					break;
-				}
+		String[] s = dossier.list();
+		for (int i = 0; i < s.length; i++) {
+			if (s[i].endsWith(".comb")) {
+				this.combattant[0] = Sauvegarde.chargerCombattant(dossier, s[i]);
+				break;
 			}
-			new Sauvegarde<>().sauvegarder(combattant, dossier, combattant.getNom() + ".comb");
-		} catch (IOException | ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		new Sauvegarde<>().sauvegarder(combattant, dossier, combattant.getNom() + ".comb");
 	}
 
 	public static void main(String[] a) {
-		try {
-			System.out.println(Sauvegarde.chargerDuelLocal(new File("C:/Users/Maxime/Downloads"), "duelTest"));
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		System.out.println(Sauvegarde.chargerDuel(new File("C:/Users/Maxime/Downloads"), "duelTest"));
 	}
 }
