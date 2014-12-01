@@ -1,6 +1,9 @@
 package fr.capacite;
-
-import fr.jeu.Menu;
+/**
+ * Remede est la classe responsable de la gestion des Remèdes dans Ring
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import fr.jeu.*;
 import fr.personnage.Combattant;
 
@@ -17,12 +20,15 @@ public class Remede extends Capacite {
 		this.description = "Heal yourself";
 	}
 
-	public Remede(String nom, String description, int efficacite, int facilite) {
-		super(nom, Capacite.SOIN, Capacite.MAGIQUE, description);
+	public Remede(String nom, int efficacite, int facilite, String description)
+			throws Exception {
+		super(nom, Capacite.SOIN, Capacite.MAGIQUE,Capacite.REMEDE,description);
 		if ((efficacite + facilite) == 100 && efficacite >= 20 && facilite >= 20) {
 			this.efficacite = efficacite;
 			this.facilite = facilite;
-		}
+		} 
+		else
+			throw new Exception("Remède incorrecte: " + this.nom);
 		this.description = "Heal yourself";
 	}
 
@@ -32,7 +38,29 @@ public class Remede extends Capacite {
 		this.facilite = r.facilite;
 		this.efficacite = r.efficacite;
 	}
-
+	/**
+	 * Fonction qui créée des fichiers texte contenant des remèdes dans le dossier "Sauvegardes/Capacite/Remede"
+	 */
+	public static void creationRemede() {
+		int nbRemde = 6;
+		Remede[] remede = new Remede[nbRemde];
+		try {
+			remede[0] = new Remede("Potion de soin", 50, 50, "Un remède basique");
+			remede[1] = new Remede("Grande potion de soin", 70, 30, "Un remède qui vous veux du bien!");
+			remede[2] = new Remede("Fée", 80, 20, "Une petite fée en fiole");
+			remede[3] = new Remede("Adréaline", 20, 80, "Un soin rapide");
+			remede[4] = new Remede("Médicament", 30, 70, "Médicaments");
+			remede[5] = new Remede("Kit de soin", 40, 60, "Une trouse de soin");
+			SauvegardeCapacite<Remede> save = new SauvegardeCapacite<Remede>();
+			for (int i = 0; i < nbRemde; i++)
+				save.sauvegarderCapacite(remede[i]);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
+	 * Permet de créer un remède via la console puis le sauvegarder dans le dossier "Sauvegardes/Capacite/Remede"
+	 */
 	public static void creerRemede() {
 		Capacite r = new Remede();
 		r.init();
@@ -54,7 +82,8 @@ public class Remede extends Capacite {
 
 	@Override
 	public String toString() {
-		return "Remede " + nom + "[facilite=" + facilite + ", efficacite=" + efficacite + "]";
+		return nom;
+		//return "Remede " + nom + "[facilite=" + facilite + ", efficacite=" + efficacite + "]";
 	}
 
 	public void init() {

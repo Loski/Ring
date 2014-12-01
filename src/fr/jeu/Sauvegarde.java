@@ -1,8 +1,13 @@
 package fr.jeu;
 
+/**
+ * Sauvegarde sert à pouvoir sauvegarder l'état d'un duel et d'un combattant, et aussi de pouvoir le récupérer
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import java.io.*;
 
-import sun.org.mozilla.javascript.internal.ast.ThrowStatement;
+//import sun.org.mozilla.javascript.internal.ast.ThrowStatement;
 import fr.capacite.*;
 import fr.personnage.*;
 
@@ -16,7 +21,7 @@ public class Sauvegarde<T> {
 	 * @param dossier
 	 *        Dossier où l'instance sera sauvegardé
 	 * @param nom
-	 *        Nomde la sauvegarde
+	 *        Nom de la sauvegarde
 	 */
 	public void sauvegarder(T d, File dossier, String nom) {
 		ObjectOutputStream oos = null;
@@ -56,7 +61,7 @@ public class Sauvegarde<T> {
 	}
 
 	/**
-	 * Demande au joueur quelle sauvegarde il doit charger, puis r�cup�re les informations dans un fichier texte de ce combattant
+	 * Demande au joueur quelle sauvegarde il doit charger, puis récupère les informations dans un fichier texte de ce combattant
 	 * 
 	 * @return Une instance d'un combattant charg� � partir d'un fichier texte.
 	 * @throws IOException
@@ -66,7 +71,7 @@ public class Sauvegarde<T> {
 			ClassNotFoundException {
 		File fichier = new File("Sauvegardes/Combattant/");
 		String nomSauvegarde = selectSauvegarde(fichier);
-		return chargerCombattant(new File(fichier.getCanonicalPath() + "/" + nomSauvegarde + ".comb"));
+		return chargerCombattant(new File(fichier.getCanonicalPath() + "/" + nomSauvegarde));
 	}
 
 	public static Combattant chargerCombattant(File fichier) {
@@ -75,7 +80,7 @@ public class Sauvegarde<T> {
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fichier)));
 			c = new Combattant((Combattant) ois.readObject());
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -84,7 +89,7 @@ public class Sauvegarde<T> {
 				e.printStackTrace();
 			}
 		}
-		return c;
+		return typeCombattant(c);
 	}
 
 	public static Combattant chargerCombattant(File fichier, String nom) {
@@ -92,10 +97,12 @@ public class Sauvegarde<T> {
 	}
 
 	/**
+	 * Sert à retourner la bonne instance d'un combattant lors d'un chargement d'un combattant
+	 * 
 	 * @param combattant
-	 * @return
+	 * @return La nouvelle instance du combattant
 	 */
-	public static Combattant typeCombattant(Combattant combattant) { // a appelé pour cq combattant à la fin du combatpour la gestion de perte de
+	public static Combattant typeCombattant(Combattant combattant) { // a appelé pour cq combattant à la fin du combat pour la gestion de perte de
 																		// carac
 		switch (combattant.getType()) { // a voir si un boolean dans la classe combattant pour voir s'il a déjà été sauver pour ne pas faire d'op
 										// inutile
@@ -123,7 +130,7 @@ public class Sauvegarde<T> {
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fichier)));
 			d = new Duel((Duel) ois.readObject());
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
@@ -139,7 +146,7 @@ public class Sauvegarde<T> {
 	 * Demande � un joueur quelle sauvegarde il doit charger dans le dossier de sauvegarde courant de Ring, puis r�cup�re les informations dans un
 	 * fichier texte
 	 * 
-	 * @return Une instance d'un duel charg� � partir d'un fichier texte. null si un problème a eu lieu
+	 * @return Une instance d'un duel chargé à partir d'un fichier texte. null si un problème a eu lieu
 	 * @throws IOException
 	 */
 	public static Duel chargerDuel() throws ClassNotFoundException, IOException {
@@ -155,7 +162,7 @@ public class Sauvegarde<T> {
 	 * Charge une instance d'un duel contenue dans un fichier
 	 * 
 	 * @param chemin
-	 *        chemin du fichier
+	 *        chemin du dossier
 	 * @param nomSauvegarde
 	 *        nom du fichier
 	 * @return Une instance de la sauvegarde du duel
@@ -168,7 +175,7 @@ public class Sauvegarde<T> {
 	 * Charge une instance d'un duel contenue dans un fichier
 	 * 
 	 * @param dossier
-	 *        chemin du fichier
+	 *        chemin du dossier
 	 * @param nomSauvegarde
 	 *        nom du fichier
 	 * @return Une instance de la sauvegarde du duel
@@ -177,12 +184,19 @@ public class Sauvegarde<T> {
 		return chargerDuel(new File(dossier.toPath() + "/" + nomSauvegarde));
 	}
 
-	/*public static DuelLocal chargerDuelLocal(File fichier) {
+	/**
+	 * Charge une instance d'un duel contenue dans un fichier
+	 * 
+	 * @param fichier
+	 *        chemin du fichier
+	 * @return Une instance de la sauvegarde du duel
+	 */
+	public static DuelReseaux chargerDuelLocal(File fichier) {
 		ObjectInputStream ois = null;
-		DuelLocal d = null;
+		DuelReseaux d = null;
 		try {
 			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fichier)));
-			d = new DuelLocal((DuelLocal) ois.readObject());
+			d = new DuelReseaux((DuelReseaux) ois.readObject());
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -195,10 +209,10 @@ public class Sauvegarde<T> {
 	}
 
 	public static
-			DuelLocal chargerDuelLocal(File fichier, String nomSauvegarde) {
+			DuelReseaux chargerDuelLocal(File fichier, String nomSauvegarde) {
 		return chargerDuelLocal(new File(fichier.toPath() + "/" + nomSauvegarde));
 	}
-*/
+
 	/**
 	 * Supprime un duel
 	 * 
@@ -222,14 +236,5 @@ public class Sauvegarde<T> {
 	public static void creerDossier(File dossier) {
 		if (!dossier.exists())
 			dossier.mkdirs();
-	}
-
-	public static void main(String[] arf) {
-		Combattant a = new Athlete(), b;
-		new Sauvegarde<Combattant>().sauvegarder(a, new File("Sauvegardes/Combattant/"), a.getNom());
-		b = chargerCombattant(new File("Sauvegardes/Combattant/"), a.getNom());
-		b = typeCombattant(b);
-		System.out.println(b.getClass());
-		return;
 	}
 }

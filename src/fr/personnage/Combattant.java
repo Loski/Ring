@@ -1,5 +1,10 @@
 package fr.personnage;
 
+/**
+ * Combattant est la classe qui gère les actions des combattants
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import java.io.Serializable;
 import java.util.*;
 
@@ -33,12 +38,6 @@ public class Combattant implements Serializable {
 	public static final int			MIN_XP		= 1;
 	public static final int			MAX_XP		= 20;
 
-	public Combattant() {
-		this.nom = new String("unknow");
-		this.capitule = false;
-		this.capaciteDefaut(); // Initialise 2 capacit�s
-	}
-
 	public Combattant(String nom, int force, int dexterite, int intelligence,
 			int concentration, int vitalite, int experience, int type,
 			ArrayList<Capacite> capacite) {
@@ -66,7 +65,34 @@ public class Combattant implements Serializable {
 		this.degat = combattant.degat;
 		this.jePeuxJouer = combattant.jePeuxJouer;
 	}
-	public void addCaract(){};
+
+	/**
+	 * Initialise un combattant selon le paramètre passé
+	 * 
+	 * @param choix
+	 *        Un nombre
+	 * @return Le combattant initialisé
+	 */
+	public static Combattant combattantBase(int choix) {
+		switch (choix) {
+			case Combattant.ATHLETE:
+				return new Athlete();
+			case Combattant.GUERRIER:
+				return new Guerrier();
+			case Combattant.MAGE:
+				return new Magicien();
+			default:
+				return new Athlete();
+		}
+	}
+
+	/**
+	 * @return Nombre aléatoire entre 1 et 4, pour l'ajout/perte caractéristiques
+	 */
+	public static int nbAleatoire() {
+		return (int) (1 + Math.random() * (4 - 1));
+	}
+
 	public String toString() {
 		String s = "-";
 		for (int i = 0; i < 50; i++)
@@ -100,28 +126,25 @@ public class Combattant implements Serializable {
 		return s;
 	}
 
+	/**
+	 * Affiche les capacités disponibles du combattants
+	 */
 	public void capaciteDisponible() {
 		for (int i = 0; i < this.capacite.size(); i++)
 			System.out.println(i + 1 + "\t" + this.capacite.get(i).toString());
 	}
 
-	public void capaciteDefaut() {
-		this.capacite = new ArrayList<Capacite>();
-		capacite.add(new Epee());
-		capacite.add(new Sortilege());
-	}
-
 	/**
 	 * Permet de soigner le combattant courrant
 	 * 
-	 * @param i
-	 *        indice de la capacit�
+	 * @param c
+	 *       	capacité utilisée pour le soin
 	 */
-	public String soin(int i) {
+	public String soin(Capacite c) {
 		String s = "";
-		if (this.capacite.get(i).calculReussite(this)) {
-			this.addVita(this.capacite.get(i).calculImpact(this, Capacite.SOIN));
-			s = "Soin de :" + this.capacite.get(i).calculImpact(this, Capacite.SOIN);
+		if (c.calculReussite(this)) {
+			this.addVita(c.calculImpact(this, Capacite.SOIN));
+			s =c.getNom()+":\nSoin de :" + c.calculImpact(this, Capacite.SOIN);
 		}
 		else
 			s = "Echec du soin";
@@ -131,21 +154,21 @@ public class Combattant implements Serializable {
 	/**
 	 * Permet d'enclencher une parade pour le combattant courrant
 	 * 
-	 * @param i
-	 *        indice de la capacit�
+	 * @param c
+	 *        capacité utilisée pour la parade
 	 * @return message d'action
 	 */
-	public String parade(int i) {
-		if (this.capacite.get(i).calculReussite(this)) {
-			switch (this.capacite.get(i).getDommage()) {
+	public String parade(Capacite c) {
+		if (c.calculReussite(this)) {
+			switch (c.getDommage()) {
 				case Capacite.MAGIQUE:
-					this.protectionMagique += this.capacite.get(i).calculImpact(this, Capacite.PARADE);
+					this.protectionMagique += c.calculImpact(this, Capacite.PARADE);
 					break;
 				case Capacite.PHYSIQUE:
-					this.protectionPhysique += this.capacite.get(i).calculImpact(this, Capacite.PARADE);
+					this.protectionPhysique += c.calculImpact(this, Capacite.PARADE);
 					break;
 			}
-			return "Protection magique : " + protectionMagique + "\nProtection physique : " + protectionPhysique;
+			return c.getNom() + ":\nProtection magique : " + protectionMagique + "\nProtection physique : " + protectionPhysique;
 		}
 		else
 			return "Echec de la parade \nProtection magique : " + protectionMagique + "\nProtection physique : " + protectionPhysique;
@@ -154,16 +177,16 @@ public class Combattant implements Serializable {
 	/**
 	 * Permet d'enclencher une attaque sur un combattant cible
 	 * 
-	 * @param i
-	 *        indice de la capacit�
+	 * @param c
+	 *        capacité utilisée pour l'attaque
 	 * @param cible
 	 *        Cible de l'attaque
 	 * @return message d'action
 	 */
-	public String attaque(int i, Combattant cible) {
-		if (this.capacite.get(i).calculReussite(this)) {
-			int impact = this.capacite.get(i).calculImpact(this, Capacite.ATTAQUE);
-			switch (this.capacite.get(i).getDommage()) {
+	public String attaque(Capacite c, Combattant cible) {
+		if (c.calculReussite(this)) {
+			int impact = c.calculImpact(this, Capacite.ATTAQUE);
+			switch (c.getDommage()) {
 				case Capacite.PHYSIQUE:
 					impact -= cible.protectionPhysique;
 					impact -= cible.protectionMagique / 3;
@@ -177,18 +200,24 @@ public class Combattant implements Serializable {
 				return "Les parades sont trop puissantes...";
 			else {
 				this.degat += impact;
-				return this.capacite.get(i).getNom() + " inflige " + impact + " dommage à " + cible.getNom();
+				return this.nom + " attaque avec " + c.getNom() + " inflige " + impact + " dommages à " + cible.getNom();
 			}
 		}
 		else
-			return "Echec de l'attaque";
+			return this.nom + " attaque avec " + c.getNom() + ": Echec de l'attaque";
 	}
 
+	/**
+	 * Ajoute un point d'expérience si possible
+	 */
 	public void addXP() {
 		if (this.experience < Combattant.MAX_XP)
 			this.experience++;
 	}
 
+	/**
+	 * Enlève un point d'expérience si possible
+	 */
 	public void lowXP() {
 		if (this.experience > Combattant.MIN_XP)
 			this.experience--;
@@ -263,24 +292,19 @@ public class Combattant implements Serializable {
 		}
 	}
 
+	/**
+	 * Prépare le tour du joueur courant.
+	 * 
+	 * @param combattant
+	 *        Le combattant adverse pour avoir ses dégats.
+	 */
 	public void preparationTour(Combattant combattant) {
 		this.finValeurAction();
 		this.lowVita(combattant.getDegat());
 	}
 
-	public static void main(String[] argc) {
-		Combattant[] combat = new Combattant[2];
-		combat[0] = new Athlete();
-		combat[0].init();
-		combat[0].initCapacite();
-		combat[1] = new Athlete(combat[0]);
-		System.out.println(combat[1]);
-		System.out.println(combat[0]);
-		return;
-	}
-
 	/**
-	 * Initialise le début du combat pour le combattant courant
+	 * Initialise le début du combat pour le combattant courant.
 	 */
 	public void preparationCombattant() {
 		this.capitule = false;
@@ -288,19 +312,41 @@ public class Combattant implements Serializable {
 	}
 
 	/**
-	 * Met � 0 les protections du joueurs courants, et ses dégâts.
+	 * Met à 0 les protections du joueurs courants, et ses dégâts.
 	 */
 	public void finValeurAction() {
 		this.protectionMagique = this.protectionPhysique = this.degat = 0;
 	}
 
+	/**
+	 * Gestion des conséquences pour le gagnant.
+	 */
 	public void gagner(Combattant perdant) {
 		this.addXP();
 		this.choixNouvelleCapacite(perdant);
+		if ((force + dexterite + intelligence + concentration + 1 <= 100 + experience))
+			this.addCaract();
 	}
 
+	/**
+	 * Ajoute une caractéristique au hasard en respectant les contraintes du personnage
+	 */
+	public void addCaract() {
+	}
+
+	/**
+	 * Supprime une caractéristique au hasard en respectant les contraintes du personnage
+	 */
+	public void supCaract() {
+	}
+
+	/**
+	 * Gestion des conséquences pour le vaincu.
+	 */
 	public void perdre() {
 		this.lowXP();
+		if (!(force + dexterite + intelligence + concentration <= 100 + experience))
+			this.supCaract();
 	}
 
 	public String getNom() {

@@ -1,8 +1,13 @@
 package fr.personnage;
-
+/**
+ * Guerrier est la classe qui assure la gestion des caractéristiques d'un guerrier
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import java.util.ArrayList;
 
 import fr.capacite.*;
+import fr.jeu.SauvegardeCapacite;
 
 public class Guerrier extends Combattant {
 
@@ -17,8 +22,19 @@ public class Guerrier extends Combattant {
 	}
 
 	public Guerrier() {
-		super("Link", 45 , 38, 15, 2, 103, Combattant.MIN_XP, Combattant.GUERRIER, null);
+		super("Maxime", 45, 38, 15, 2, 103, Combattant.MIN_XP, Combattant.GUERRIER, null);
 		capaciteDefaut();
+	}
+	/**
+	 * Initialise des capacités par défauts
+	 */
+	public void capaciteDefaut() {
+		this.capacite = new ArrayList<Capacite>();
+		this.capacite.add(SauvegardeCapacite.chargerCapacite("Epee/Master Sword", Capacite.EPEE));
+		this.capacite.add(SauvegardeCapacite.chargerCapacite("Epee/Black March", Capacite.EPEE));
+		this.capacite.add(SauvegardeCapacite.chargerCapacite("Bouclier/Bouclier Hylien", Capacite.BOUCLIER));
+		this.capacite.add(SauvegardeCapacite.chargerCapacite("Bouclier/Bouclier du dragon", Capacite.BOUCLIER));
+		this.capacite.add(SauvegardeCapacite.chargerCapacite("Remede/Fée", Capacite.REMEDE));
 	}
 
 	public void init() {
@@ -26,8 +42,12 @@ public class Guerrier extends Combattant {
 			super.init();
 		} while (force < dexterite + 10 && dexterite + 10 < intelligence + 10 && intelligence + 10 < concentration);
 	}
-
-	public void addCaract(int hasard) {
+	/**
+	 * 
+	 * @see fr.personnage.Combattant#addCaract()
+	 */
+	public void addCaract() {
+		int hasard = Combattant.nbAleatoire();
 		boolean nouveauPointImpossible = false;
 		switch (hasard) {
 			case FORCE:
@@ -52,6 +72,41 @@ public class Guerrier extends Combattant {
 					nouveauPointImpossible = true;
 		}
 		if (nouveauPointImpossible)
-			force++;
+			addCaract();
+	}
+	/**
+	 * 
+	 * @see fr.personnage.Combattant#supCaract()
+	 */
+	public void supCaract() {
+		int hasard = Combattant.nbAleatoire();
+		boolean enleverPointImpossible = false;
+		switch (hasard) {
+			case FORCE:
+				if (force - 1 >= dexterite + 10)
+					force--;
+				else
+					enleverPointImpossible = true;
+				break;
+			case DEXTERITE:
+				if (dexterite + 9 >= intelligence + 10)
+					dexterite--;
+				else
+					enleverPointImpossible = true;
+				break;
+			case INTELLIGENCE:
+				if (intelligence + 10 >= concentration + 1)
+					intelligence--;
+				else
+					enleverPointImpossible = true;
+				break;
+			case CONCENTRATION:
+				if (concentration > 0)
+					concentration--;
+				else
+					enleverPointImpossible = false;
+		}
+		if (enleverPointImpossible)
+			supCaract();
 	}
 }

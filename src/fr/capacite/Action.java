@@ -11,22 +11,22 @@ public interface Action {
 	public static final int	SORTILEGE	= 3;
 
 	/**
-	 * Calcule l'impact de la capacité courante
+	 * Calcule l'impact de la capacitÃ© courante
 	 * 
 	 * @param combattant
 	 *        Le combattant courant
 	 * @param type
-	 *        Envoie le type d'attaque (ATTAQUE/PARADE/SOIN), ce qui sert à différencier pour l'impact de l'épée en parade ou en attaque
-	 * @return valeur de l'impact de la capacité qui lance cette fonction
+	 *        Envoie le type d'attaque (ATTAQUE/PARADE/SOIN), ce qui sert Ã  diffÃ©rencier pour l'impact de l'Ã©pee en parade ou en attaque
+	 * @return valeur de l'impact de la capacitÃ© qui lance cette fonction
 	 */
 	public abstract int calculImpact(Combattant combattant, int type);
 
 	/**
-	 * Calcule la probabilité de réussite de la capacité courante
+	 * Calcule la probabilitï¿½ de rï¿½ussite de la capacitÃ© courante
 	 * 
 	 * @param combattant
 	 *        Le combattant courrant
-	 * @return valeur de la probabilité de réussite de cette capacité
+	 * @return valeur de la probabilitÃ© de rÃ©ussite de cette capacitÃ©
 	 */
 	public abstract boolean calculReussite(Combattant combattant);
 }

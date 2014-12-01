@@ -1,5 +1,9 @@
 package fr.jeu;
-
+/**
+ * SauvegardeCapacite sert à pouvoir sauvegarder l'état d'une capacité, puis de pouvoir la charger
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -19,12 +23,11 @@ public class SauvegardeCapacite<T extends Capacite> extends Sauvegarde {
 	public static Capacite chargerCapacite(String chemin, int capacite) {
 		ObjectInputStream ois;
 		File fichier = new File("Sauvegardes/Capacite/" + chemin);
-		creerDossier(fichier);
-		try {
-			String nomCapacite = Sauvegarde.selectSauvegarde(fichier);
+		try { 
+			/*String nomCapacite = Sauvegarde.selectSauvegarde(fichier);
 			if (nomCapacite == null)
-				return null;
-			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fichier.getCanonicalPath() + "/" + nomCapacite)));
+				return null;*/
+			ois = new ObjectInputStream(new BufferedInputStream(new FileInputStream(fichier.getCanonicalPath())));
 			switch (capacite) {
 				case Capacite.EPEE:
 					return new Epee((Epee) ois.readObject());

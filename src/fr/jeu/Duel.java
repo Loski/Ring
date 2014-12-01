@@ -1,5 +1,10 @@
 package fr.jeu;
 
+/**
+ * Duel est la classe gérant un duel entre un personnage et une intelligence artificielle
+ * @author Maxime LAVASTE
+ * @author Loïc LAFONTAINE
+ */
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,6 +39,9 @@ public class Duel implements Serializable {
 		this.joueur2 = d.joueur2;
 	}
 
+	/**
+	 * Gère le démarrage d'un duel en initialisant les caractéristiques des combattants et l'initiative
+	 */
 	public void demarrageDuel() {
 		for (int i = 0; i < 2; i++) {
 			this.combattant[i].preparationCombattant();
@@ -42,15 +50,20 @@ public class Duel implements Serializable {
 		combattant[joueur1].setJePeuxJouer(true);
 	}
 
+	/**
+	 * Vérifie si le combat est terminé
+	 * 
+	 * @return Si le combat est terminé true, sinon else
+	 */
 	public boolean finCombat() {
 		return this.combattant[0].isCapitule() || this.combattant[1].isCapitule() || !this.combattant[0].isEnVie() || !this.combattant[1].isEnVie();
 	}
 
 	/**
-	 * G�re le tour d'un joueur
+	 * Gère le tour d'un joueur
 	 * 
 	 * @param joueurActuel
-	 *        Joueur courant qui g�re ses actions disponibles
+	 *        Joueur courant qui gère ses actions disponibles
 	 * @param cible
 	 *        joueur cible de l'action du joueur lors d'une attaque
 	 */
@@ -62,9 +75,9 @@ public class Duel implements Serializable {
 		while (pointAction > 0 && !finCombat()) {
 			do {
 				combattant[joueurActuel].capaciteDisponible();
-				System.out.println(this.combattant[0].getCapacite().size() + 1 + "\tAbandon");
+				System.out.println(this.combattant[joueurActuel].getCapacite().size() + 1 + "\tAbandon");
 				choix = Menu.choix();
-			} while (choix < 1 || choix > this.combattant[0].getCapacite().size() + 1);// +1 Abandon
+			} while (choix < 1 || choix > this.combattant[joueurActuel].getCapacite().size() + 1);// +1 Abandon
 			action(joueurActuel, cible, choix - 1);
 			pointAction--;
 		}
@@ -74,9 +87,9 @@ public class Duel implements Serializable {
 	 * @param joueurActuel
 	 *        Combattant courant
 	 * @param cible
-	 *        Combattant vis� par une attaque
+	 *        Combattant visé par une attaque
 	 * @param choix
-	 *        choix de la capacit�
+	 *        choix de la capacités
 	 */
 	public void action(int joueurActuel, int cible, int choix) {
 		if (choix == this.combattant[joueurActuel].getCapacite().size())
@@ -84,25 +97,28 @@ public class Duel implements Serializable {
 		else
 			switch (this.combattant[joueurActuel].getCapacite().get(choix).getType()) {
 				case Capacite.ATTAQUE:
-					System.out.println(this.combattant[joueurActuel].attaque(choix, combattant[cible]));
+					System.out.println(this.combattant[joueurActuel].attaque(this.combattant[joueurActuel].getCapacite().get(choix), combattant[cible]));
 					break;
 				case Capacite.PARADE:
-					System.out.println(this.combattant[joueurActuel].parade(choix));
+					System.out.println(this.combattant[joueurActuel].parade(this.combattant[joueurActuel].getCapacite().get(choix)));
 					break;
 				case Capacite.SOIN:
-					System.out.println(this.combattant[joueurActuel].soin(choix));
+					System.out.println(this.combattant[joueurActuel].soin(this.combattant[joueurActuel].getCapacite().get(choix)));
 					break;
 				case Capacite.EPEE:
 					if (Epee.choixType())
-						System.out.println(this.combattant[joueurActuel].attaque(choix, combattant[cible]));
+						System.out.println(this.combattant[joueurActuel].attaque(this.combattant[joueurActuel].getCapacite().get(choix), combattant[cible]));
 					else
-						System.out.println(this.combattant[joueurActuel].parade(choix));
+						System.out.println(this.combattant[joueurActuel].parade(this.combattant[joueurActuel].getCapacite().get(choix)));
 					break;
 				default:
 					break;
 			}
 	}
 
+	/**
+	 * Gère l'initiative
+	 */
 	public void initiative() {
 		if (combattant[0].getExperience() > combattant[1].getExperience()) {
 			joueur1 = 0;
@@ -124,6 +140,9 @@ public class Duel implements Serializable {
 		}
 	}
 
+	/**
+	 * Gère le tour d'un joueur
+	 */
 	public void tour() {
 		if (combattant[joueur1].isJePeuxJouer()) {
 			System.out.println(this.affJoueur(this.joueur1));
@@ -139,45 +158,30 @@ public class Duel implements Serializable {
 		}
 	}
 
+	/**
+	 * Gestion de tout le combat
+	 */
 	public void combat() {
 		demarrageDuel();
 		do {
-			new Sauvegarde<Duel>().sauvegarder(this, new File("Sauvegarde/Duel/"), combattant[0].getNom() + "_vs_" + combattant[1].getNom());
+			new Sauvegarde<Duel>().sauvegarder(this, new File("Sauvegardes/Duel/"), combattant[0].getNom() + "_vs_" + combattant[1].getNom());
 			tour();
 		} while (!this.finCombat());
 		int gagnant = gagnant();
 		int perdant = (gagnant == 1) ? 0 : 1;
 		System.out.println("Le joueur " + combattant[gagnant].getNom() + " a gagné.");
-		gestionFinCombatGagnant(gagnant, perdant);
-	}
-
-	public static void main(String[] args) {
-		Combattant combattant[] = { new Athlete(), new Magicien() };
-		new Duel(combattant).combat();;
-		return;
-	}
-
-	public void affichageJouer() {
-		for (int i = 0; i < 2; i++) {
-			System.out.println(combattant[i]);
-		}
+		this.combattant[gagnant].gagner(combattant[perdant]);
+		this.combattant[perdant].perdre();
+		System.out.println(combattant[gagnant]);
 	}
 
 	/**
 	 * @param i
-	 * @return
+	 *        indice du joueur courant
+	 * @return Un message pour indiquer qui doit jouer
 	 */
 	public String affJoueur(int i) {
 		return combattant[i].getNom() + " à toi de jouer !";
-	}
-
-	public void gestionFinCombatGagnant(int gagnant, int perdant) {
-		combattant[gagnant].choixNouvelleCapacite(combattant[perdant]);
-		combattant[gagnant] = Sauvegarde.typeCombattant(combattant[gagnant]);
-		combattant[gagnant].addCaract();
-	}
-
-	public void gestionFinCombatPerdant(int perdant, int gagnant) {
 	}
 
 	/*
